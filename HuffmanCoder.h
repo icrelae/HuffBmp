@@ -2,17 +2,30 @@
 #define _HUFFMANCODER_H
 
 #include <map>
+#include <memory>
 #include "coder.h"
+
+class HuffmanNode {
+	public:
+		HuffmanNode(char, unsigned, std::shared_ptr<HuffmanNode>,
+				std::shared_ptr<HuffmanNode>);
+		char value;
+		unsigned weight;
+		std::shared_ptr<HuffmanNode> left, right;
+};
 
 class HuffmanCoder: public Coder {
 	public:
-		HuffmanCoder(map<char, std::string> map);
+		HuffmanCoder(const std::map<char, unsigned>&);
 		virtual ~HuffmanCoder();
 		virtual std::string Encode(char);
 		virtual char Decode(std::string);
-		unsigned AddWeight(char, unsigned w = 1);
 	private:
-		map<char, std::string> mapTable;
+		HuffmanNode buildTree();
+		HuffmanNode huffmanRoot;
+		void BuildTree();
+		std::map<char, unsigned> valueWeight;
+		std::map<char, std::string> mapTable;
 };
 
 #endif // _HUFFMANCODER_H
