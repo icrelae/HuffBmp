@@ -4,28 +4,19 @@
 #include <map>
 #include <memory>
 #include "coder.h"
-
-class HuffmanNode {
-	public:
-		HuffmanNode(char, unsigned, std::shared_ptr<HuffmanNode>,
-				std::shared_ptr<HuffmanNode>);
-		char value;
-		unsigned weight;
-		std::shared_ptr<HuffmanNode> left, right;
-};
+#include "BinaryTree.h"
 
 class HuffmanCoder: public Coder {
 	public:
 		HuffmanCoder(const std::map<char, unsigned>&);
 		virtual ~HuffmanCoder();
-		virtual std::string Encode(char);
-		virtual char Decode(std::string);
+		virtual std::string Encode(std::string);
+		virtual std::string Decode(std::string);
 	private:
-		HuffmanNode buildTree();
-		HuffmanNode huffmanRoot;
-		void BuildTree();
+		std::shared_ptr<BinaryTreeNode<paire<char, unsigned>>> huffmanRoot;
 		std::map<char, unsigned> valueWeight;
 		std::map<char, std::string> mapTable;
+		std::shared_ptr<BinaryTreeNode<paire<char, unsigned>>> BuildTree();
 };
 
 #endif // _HUFFMANCODER_H

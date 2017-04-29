@@ -3,8 +3,8 @@
 
 class Coder {
 	public:
-		virtual std::string Encode(char) = 0;
-		virtual char Decode(std::string) = 0;
+		virtual std::string Encode(std::string) = 0;
+		virtual std::string Decode(std::string) = 0;
 };
 
 #endif // _CODER_H
