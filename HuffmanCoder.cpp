@@ -1,8 +1,7 @@
 #include "HuffmanCoder.h"
 
 HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &map):
-	valueWeight(map),
-	huffmanRoot(std::make_shared<HuffTreeNode>(Pair_CU({' ', 0})))
+	valueWeight(map)
 {
 }
 
@@ -20,8 +19,8 @@ HuffmanCoder::HuffTreeNodePtr HuffmanCoder::BuildTree()
 		lstNodePtr.push_back(std::make_shared<HuffTreeNode>(pairValWei));
 	}
 	lstNodePtr.sort(SortByWeight);
-	decltype(lstNodePtr)::const_iterator lstIt1, lstIt2;
 	HuffTreeNodePtr newNode;
+	decltype(lstNodePtr)::const_iterator lstIt1, lstIt2;
 	while (1 < lstNodePtr.size()) {
 		// merge first two node in 'newNode' as lchild and rchild
 		lstIt1 = lstIt2 = lstNodePtr.begin();

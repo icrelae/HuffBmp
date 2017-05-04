@@ -21,12 +21,13 @@ class HuffmanCoder: public Coder {
 	private:
 		std::map<char, unsigned> valueWeight;
 		std::map<char, std::string> mapTable;
-		HuffTreeNodePtr huffmanRoot;
+		BinaryTree<Pair_CU> HuffTree;
 		HuffTreeNodePtr BuildTree();
 		static bool SortByWeight(
 				const HuffTreeNodePtr&, const HuffTreeNodePtr&);
 		static HuffTreeNodePtr Combine2Node(
 				const HuffTreeNodePtr&, const HuffTreeNodePtr&);
+		bool GetMapTable(const HuffTreeNodePtr&);
 };
 
 #endif // _HUFFMANCODER_H
