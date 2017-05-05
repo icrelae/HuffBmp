@@ -2,6 +2,7 @@
 #define _BINARYTREE_H
 
 #include <memory>
+#include <vector>
 
 template <typename DT>
 class BinaryTreeNode
@@ -21,10 +22,16 @@ class BinaryTree
 {
 	public:
 		std::string GetTreeStruct();
+		typename BinaryTreeNode<DT>::NodePtr SetTreeStruct(
+				const std::string&,
+				const std::vector<DT>&);
 		BinaryTree(const typename BinaryTreeNode<DT>::NodePtr&);
 	private:
 		typename BinaryTreeNode<DT>::NodePtr root;
-		std::string TreeStructPreOrder();
+		std::string GetTreeStructPreOrder();
+		typename BinaryTreeNode<DT>::NodePtr SetTreeStructPreOrder(
+				const std::string&,
+				const std::vector<DT>&);
 };
 
 #endif // _BINARYTREE_H
