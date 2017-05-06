@@ -27,7 +27,7 @@ class HuffmanCoder: public Coder {
 				const HuffTreeNodePtr&, const HuffTreeNodePtr&);
 		static HuffTreeNodePtr Combine2Node(
 				const HuffTreeNodePtr&, const HuffTreeNodePtr&);
-		bool GetMapTable(const HuffTreeNodePtr&);
+		std::map<char, std::string>::size_type BuildMapTable(const HuffTreeNodePtr&);
 };
 
 #endif // _HUFFMANCODER_H

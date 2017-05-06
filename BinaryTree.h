@@ -26,6 +26,7 @@ class BinaryTree
 				const std::string&,
 				const std::vector<DT>&);
 		BinaryTree(const typename BinaryTreeNode<DT>::NodePtr&);
+		const typename BinaryTreeNode<DT>::NodePtr GetRoot();
 	private:
 		typename BinaryTreeNode<DT>::NodePtr root;
 		std::string GetTreeStructPreOrder();

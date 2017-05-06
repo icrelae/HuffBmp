@@ -29,9 +29,9 @@ std::string BinaryTree<DT>::GetTreeStructPreOrder()
 {
 	std::string treeStruct = "";
 	std::list<std::pair<decltype(root), unsigned char>> nodeStack{{root, 0}};
-	typename decltype(nodeStack)::iterator nodeStackIt;
+	typename decltype(nodeStack)::reverse_iterator nodeStackIt;
 	while (!nodeStack.empty()) {
-		nodeStackIt = nodeStack.end() - 1;
+		nodeStackIt = nodeStack.rbegin();
 		switch (nodeStackIt->second) {
 			case 0:
 				++nodeStackIt->second;
@@ -50,7 +50,8 @@ std::string BinaryTree<DT>::GetTreeStructPreOrder()
 					treeStruct += '0';
 				break;
 			case 2:
-				nodeStack.erase(nodeStackIt);
+				nodeStack.pop_back();
+				treeStruct.pop_back();
 				break;
 		}
 	}
@@ -74,9 +75,9 @@ typename BinaryTreeNode<DT>::NodePtr BinaryTree<DT>::SetTreeStructPreOrder(
 	typename std::vector<DT>::size_type indexVec = 0;
 	root = std::make_shared<BinaryTreeNode<DT>>({' ', 0});
 	std::list<std::pair<decltype(root), unsigned char>> nodeStack{{root, 0}};
-	typename decltype(nodeStack)::iterator nodeStackIt;
+	typename decltype(nodeStack)::reverse_iterator nodeStackIt;
 	while (!nodeStack.empty() && indexStr < treeStruct.size()) {
-		nodeStackIt = nodeStack.end() - 1;
+		nodeStackIt = nodeStack.rbegin();
 		switch (nodeStackIt->second) {
 			case 0:
 				++nodeStackIt->second;
@@ -97,11 +98,17 @@ typename BinaryTreeNode<DT>::NodePtr BinaryTree<DT>::SetTreeStructPreOrder(
 				}
 				break;
 			case 2:
-				nodeStack.erase(nodeStackIt);
+				nodeStack.pop_back();
 				break;
 		}
 	}
 	if (indexStr < treeStruct.size())
 		root = nullptr;
+	return root;
+}
+
+template <typename DT>
+const typename BinaryTreeNode<DT>::NodePtr BinaryTree<DT>::GetRoot()
+{
 	return root;
 }

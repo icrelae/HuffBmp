@@ -1,7 +1,7 @@
 #include "HuffmanCoder.h"
 
 HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &map):
-	valueWeight(map)
+	valueWeight(map), HuffTree(nullptr)
 {
 }
 
@@ -46,4 +46,41 @@ HuffmanCoder::HuffTreeNodePtr HuffmanCoder::Combine2Node(
 	return std::make_shared<HuffTreeNode>(
 			Pair_CU({' ', lnode->data.second + rnode->data.second}),
 			lnode, rnode);
+}
+
+std::map<char, std::string>::size_type HuffmanCoder::BuildMapTable(const HuffTreeNodePtr &root)
+{
+	std::string codeStr = "";
+
+	std::list<std::pair<decltype(root), unsigned char>> nodeStack{{root, 0}};
+	typename decltype(nodeStack)::reverse_iterator nodeStackIt;
+	while (!nodeStack.empty()) {
+		nodeStackIt = nodeStack.rbegin();
+		switch (nodeStackIt->second) {
+			case 0:
+				++nodeStackIt->second;
+				if (nullptr != nodeStackIt->first->lchild) {
+					nodeStack.push_back({nodeStackIt->first->lchild, 0});
+					codeStr += '1';
+				}
+				break;
+			case 1:
+				++nodeStackIt->second;
+				if (nullptr != nodeStackIt->first->rchild) {
+					nodeStack.push_back({nodeStackIt->first->rchild, 0});
+					codeStr += '0';
+				}
+				break;
+			case 2:
+				if (nodeStackIt->first->lchild == nullptr &&
+						nodeStackIt->first->rchild==nullptr) {
+					char c = nodeStackIt->first->data.first;
+					mapTable[c] = codeStr;
+				}
+				nodeStack.pop_back();
+				codeStr.pop_back();
+				break;
+		}
+	}
+	return mapTable.size();
 }
