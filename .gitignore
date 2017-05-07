@@ -33,3 +33,8 @@
 
 # test file
 temp/
+
+# cscope
+./cscope.in.out
+./cscope.out
+./cscope.po.out

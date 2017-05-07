@@ -1,8 +1,21 @@
+#include <algorithm>
+#include <list>
+#include <bitset>
 #include "HuffmanCoder.h"
 
-HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &map):
-	valueWeight(map), HuffTree(nullptr)
+HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &map)
+	: valueWeight(map)
 {
+	HuffTreeNodePtr root = BuildTree();
+	huffTree.SetRoot(root);
+	BuildMapTable(huffTree.GetRoot());
+}
+
+HuffmanCoder::HuffmanCoder(
+		const std::string &treeStruct, const std::vector<Pair_CU> &leafData)
+{
+	huffTree.SetTreeStruct(treeStruct, leafData);
+	BuildMapTable(huffTree.GetRoot());
 }
 
 bool HuffmanCoder::SortByWeight(const HuffTreeNodePtr &lhs,
@@ -11,7 +24,7 @@ bool HuffmanCoder::SortByWeight(const HuffTreeNodePtr &lhs,
 	return lhs->data.second < rhs->data.second;
 }
 
-HuffmanCoder::HuffTreeNodePtr HuffmanCoder::BuildTree()
+HuffmanCoder::HuffTreeNodePtr HuffmanCoder::BuildTree() const
 {
 	std::list<HuffmanCoder::HuffTreeNodePtr> lstNodePtr;
 	// cast 'pair<char, unsigned>' into 'HuffTreeNode'
@@ -61,14 +74,14 @@ std::map<char, std::string>::size_type HuffmanCoder::BuildMapTable(const HuffTre
 				++nodeStackIt->second;
 				if (nullptr != nodeStackIt->first->lchild) {
 					nodeStack.push_back({nodeStackIt->first->lchild, 0});
-					codeStr += '1';
+					codeStr += CODE_LCHILD;
 				}
 				break;
 			case 1:
 				++nodeStackIt->second;
 				if (nullptr != nodeStackIt->first->rchild) {
 					nodeStack.push_back({nodeStackIt->first->rchild, 0});
-					codeStr += '0';
+					codeStr += CODE_RCHILD;
 				}
 				break;
 			case 2:
@@ -83,4 +96,50 @@ std::map<char, std::string>::size_type HuffmanCoder::BuildMapTable(const HuffTre
 		}
 	}
 	return mapTable.size();
+}
+
+
+std::string HuffmanCoder::Encode(std::string &originCode) const
+{
+	std::string result = "";
+
+	while (originCode.size() > 8) {
+		std::bitset<8> oneByte =
+			std::bitset<8>(originCode, 0, 8, CODE_LCHILD, CODE_RCHILD);
+		const char key = static_cast<char>(oneByte.to_ulong());
+		//result += mapTable[c];	// invalid, if map[k] non-exist it will be inserted
+		decltype(mapTable)::const_iterator itMapTable = mapTable.find(key);
+		if (itMapTable == mapTable.end())
+			throw std::out_of_range("no value for key: " + key);
+		result += itMapTable->second;
+	}
+	return result;
+}
+
+std::string HuffmanCoder::Decode(std::string &originStr) const
+{
+	std::string result = "";
+
+	const HuffTreeNodePtr root = huffTree.GetRoot();
+	const HuffTreeNodePtr *nodePtr = &root;
+	std::string::const_iterator itOriginStr = originStr.begin();
+	while(itOriginStr != originStr.end()) {
+		if ((*nodePtr)->lchild == nullptr && (*nodePtr)->rchild == nullptr) {
+			result += (*nodePtr)->data.first;
+			nodePtr = &root;
+			continue;
+		}
+		switch (*itOriginStr) {
+			case CODE_LCHILD:
+				nodePtr = &(*nodePtr)->lchild;
+				break;
+			case CODE_RCHILD:
+				nodePtr = &(*nodePtr)->rchild;
+				break;
+			default:
+				throw std::out_of_range("unknown code: " + *itOriginStr);
+		}
+		++itOriginStr;
+	}
+	return result;
 }

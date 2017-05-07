@@ -4,14 +4,17 @@
 #include <memory>
 #include <vector>
 
+#define CODE_CHLDEXIST	('0')
+#define CODE_CHLDNULL	('1')
+
 template <typename DT>
 class BinaryTreeNode
 {
 	public:
 		using NodePtr = std::shared_ptr<BinaryTreeNode<DT>>;
-		BinaryTreeNode(DT d,
-				const NodePtr &l = nullptr,
-				const NodePtr &r = nullptr);
+
+		BinaryTreeNode(DT, const NodePtr &l = nullptr, const NodePtr &r = nullptr);
+
 		DT data;
 		NodePtr lchild;
 		NodePtr rchild;
@@ -21,15 +24,18 @@ template <typename DT>
 class BinaryTree
 {
 	public:
-		std::string GetTreeStruct();
+		BinaryTree(const typename BinaryTreeNode<DT>::NodePtr &r = nullptr);
+
+		const typename BinaryTreeNode<DT>::NodePtr GetRoot() const;
+		void SetRoot(typename BinaryTreeNode<DT>::NodePtr&);
+		std::string GetTreeStruct() const;
 		typename BinaryTreeNode<DT>::NodePtr SetTreeStruct(
 				const std::string&,
 				const std::vector<DT>&);
-		BinaryTree(const typename BinaryTreeNode<DT>::NodePtr&);
-		const typename BinaryTreeNode<DT>::NodePtr GetRoot();
 	private:
 		typename BinaryTreeNode<DT>::NodePtr root;
-		std::string GetTreeStructPreOrder();
+
+		std::string GetTreeStructPreOrder() const;
 		typename BinaryTreeNode<DT>::NodePtr SetTreeStructPreOrder(
 				const std::string&,
 				const std::vector<DT>&);
