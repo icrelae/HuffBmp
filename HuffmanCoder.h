@@ -28,7 +28,7 @@ class HuffmanCoder: public Coder {
 		std::map<char, std::string> mapTable;
 
 		HuffTreeNodePtr BuildTree() const;
-		static bool SortByWeight(
+		static bool SortByWeightAsc(
 				const HuffTreeNodePtr&, const HuffTreeNodePtr&);
 		static HuffTreeNodePtr Combine2Node(
 				const HuffTreeNodePtr&, const HuffTreeNodePtr&);
