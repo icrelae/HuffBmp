@@ -5,14 +5,14 @@
 
 // BinaryTreeNode
 template <typename DT>
-BinaryTreeNode<DT>::BinaryTreeNode( DT d, const NodePtr &l, const NodePtr &r)
+BinaryTreeNode<DT>::BinaryTreeNode(DT d, const NodePtr &l, const NodePtr &r)
 	: data(d), lchild(l), rchild(r)
 {
 }
 
 // BinaryTree
 template <typename DT>
-BinaryTree<DT>::BinaryTree( const typename BinaryTreeNode<DT>::NodePtr &p)
+BinaryTree<DT>::BinaryTree(const typename BinaryTreeNode<DT>::NodePtr &p)
 	: root(p)
 {
 }

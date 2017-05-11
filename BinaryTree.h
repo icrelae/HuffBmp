@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
-#define CODE_CHLDEXIST	('0')
-#define CODE_CHLDNULL	('1')
+#define CODE_CHLDNULL	('0')
+#define CODE_CHLDEXIST	('1')
 
 template <typename DT>
 class BinaryTreeNode
