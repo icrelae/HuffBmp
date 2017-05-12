@@ -1,19 +1,16 @@
-CXXFLAGS=
-OBJ= BinaryTree.o HuffmanCoder.o
+CXXFLAGS=-Wall
+OBJS= Main.o HuffmanCoder.o
 target="HuffBmp.out"
 
-${target}: ${OBJ}
-	${CXX} ${CXXFLAGS} ${OBJ} -o ${@}
-
-BinaryTree.o: BinaryTree.cpp BinaryTree.h
-	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
+${target}: ${OBJS}
+	${CXX} ${CXXFLAGS} ${OBJS} -o ${@}
 
 HuffmanCoder.o: HuffmanCoder.cpp HuffmanCoder.h BinaryTree.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-.PHONY: cleanall cleanobj
-cleanall: cleanobj
+.PHONY: cleanall clean
+cleanall: clean
 	-rm ${target}
-cleanobj:
+clean:
 	-rm *.o
 	

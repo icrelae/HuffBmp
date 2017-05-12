@@ -18,6 +18,10 @@ HuffmanCoder::HuffmanCoder(
 	BuildMapTable(huffTree.GetRoot());
 }
 
+HuffmanCoder::~HuffmanCoder()
+{
+}
+
 bool HuffmanCoder::SortByWeightAsc(const HuffTreeNodePtr &lhs,
 		const HuffTreeNodePtr &rhs)
 {
