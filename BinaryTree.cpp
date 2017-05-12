@@ -87,7 +87,7 @@ typename BinaryTreeNode<DT>::NodePtr BinaryTree<DT>::SetTreeStructPreOrder(
 				++nodeStackIt->second;
 				if (CODE_CHLDEXIST == treeStruct[indexStr++]) {
 					nodeStackIt->first.lchild =
-						std::make_shared<decltype(root)>(vecData[indexVec]);
+						std::make_shared<BinaryTreeNode<DT>>(vecData[indexVec]);
 					nodeStack.push_back({nodeStackIt->first.lchild, 0});
 					++indexVec;
 				} else
@@ -97,7 +97,7 @@ typename BinaryTreeNode<DT>::NodePtr BinaryTree<DT>::SetTreeStructPreOrder(
 				++nodeStackIt->second;
 				if (CODE_CHLDEXIST == treeStruct[indexStr++]) {
 					nodeStackIt->first.rchild =
-						std::make_shared<decltype(root)>(vecData[indexVec]);
+						std::make_shared<BinaryTreeNode<DT>>(vecData[indexVec]);
 					nodeStack.push_back({nodeStackIt->first.rchild, 0});
 					++indexVec;
 				} else
