@@ -18,7 +18,11 @@ HuffmanCoder::HuffmanCoder(
 	BuildMapTable(huffTree.GetRoot());
 }
 
-bool HuffmanCoder::SortByWeight(const HuffTreeNodePtr &lhs,
+HuffmanCoder::~HuffmanCoder()
+{
+}
+
+bool HuffmanCoder::SortByWeightAsc(const HuffTreeNodePtr &lhs,
 		const HuffTreeNodePtr &rhs)
 {
 	return lhs->data.second < rhs->data.second;
@@ -31,7 +35,7 @@ HuffmanCoder::HuffTreeNodePtr HuffmanCoder::BuildTree() const
 	for (auto const &pairValWei : valueWeight) {
 		lstNodePtr.push_back(std::make_shared<HuffTreeNode>(pairValWei));
 	}
-	lstNodePtr.sort(SortByWeight);
+	lstNodePtr.sort(SortByWeightAsc);
 	HuffTreeNodePtr newNode;
 	decltype(lstNodePtr)::const_iterator lstIt1, lstIt2;
 	while (1 < lstNodePtr.size()) {
@@ -98,20 +102,22 @@ std::map<char, std::string>::size_type HuffmanCoder::BuildMapTable(const HuffTre
 	return mapTable.size();
 }
 
-
 std::string HuffmanCoder::Encode(std::string &originCode) const
 {
 	std::string result = "";
 
 	while (originCode.size() > 8) {
+		// bit code to 'char'
 		std::bitset<8> oneByte =
 			std::bitset<8>(originCode, 0, 8, CODE_LCHILD, CODE_RCHILD);
 		const char key = static_cast<char>(oneByte.to_ulong());
-		//result += mapTable[c];	// invalid, if map[k] non-exist it will be inserted
+		//result += mapTable[c];	// invalid, if map[k] non-exist it will be inserted,
+						// but current func is 'const'
 		decltype(mapTable)::const_iterator itMapTable = mapTable.find(key);
 		if (itMapTable == mapTable.end())
 			throw std::out_of_range("no value for key: " + key);
 		result += itMapTable->second;
+		originCode.erase(0, 8);
 	}
 	return result;
 }
@@ -123,10 +129,14 @@ std::string HuffmanCoder::Decode(std::string &originStr) const
 	const HuffTreeNodePtr root = huffTree.GetRoot();
 	const HuffTreeNodePtr *nodePtr = &root;
 	std::string::const_iterator itOriginStr = originStr.begin();
+	std::string::const_iterator itLastCodeEnd = itOriginStr;
 	while(itOriginStr != originStr.end()) {
 		if ((*nodePtr)->lchild == nullptr && (*nodePtr)->rchild == nullptr) {
+			// leaf of huffmanTree, get data and reset 'nodePtr'
 			result += (*nodePtr)->data.first;
 			nodePtr = &root;
+			// record last end of completed code
+			itLastCodeEnd = itOriginStr;
 			continue;
 		}
 		switch (*itOriginStr) {
@@ -141,5 +151,7 @@ std::string HuffmanCoder::Decode(std::string &originStr) const
 		}
 		++itOriginStr;
 	}
+	// return the rest of originStr
+	originStr = originStr.substr(itLastCodeEnd - originStr.begin());
 	return result;
 }

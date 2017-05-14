@@ -7,9 +7,6 @@
 #include "Coder.h"
 #include "BinaryTree.h"
 
-#define CODE_LCHILD	('0')
-#define CODE_RCHILD	('1')
-
 class HuffmanCoder: public Coder {
 	public:
 		using Pair_CU = std::pair<char, unsigned>;
@@ -26,9 +23,11 @@ class HuffmanCoder: public Coder {
 		BinaryTree<Pair_CU> huffTree;
 		std::map<char, unsigned> valueWeight;
 		std::map<char, std::string> mapTable;
+		static const char CODE_LCHILD = '0';
+		static const char CODE_RCHILD = '1';
 
 		HuffTreeNodePtr BuildTree() const;
-		static bool SortByWeight(
+		static bool SortByWeightAsc(
 				const HuffTreeNodePtr&, const HuffTreeNodePtr&);
 		static HuffTreeNodePtr Combine2Node(
 				const HuffTreeNodePtr&, const HuffTreeNodePtr&);
