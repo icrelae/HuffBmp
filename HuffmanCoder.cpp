@@ -74,29 +74,29 @@ std::map<char, std::string>::size_type HuffmanCoder::BuildMapTable(const HuffTre
 	while (!nodeStack.empty()) {
 		nodeStackIt = nodeStack.rbegin();
 		switch (nodeStackIt->second) {
-			case 0:
-				++nodeStackIt->second;
-				if (nullptr != nodeStackIt->first->lchild) {
-					nodeStack.push_back({nodeStackIt->first->lchild, 0});
-					codeStr += CODE_LCHILD;
-				}
-				break;
-			case 1:
-				++nodeStackIt->second;
-				if (nullptr != nodeStackIt->first->rchild) {
-					nodeStack.push_back({nodeStackIt->first->rchild, 0});
-					codeStr += CODE_RCHILD;
-				}
-				break;
-			case 2:
-				if (nodeStackIt->first->lchild == nullptr &&
-						nodeStackIt->first->rchild==nullptr) {
-					char c = nodeStackIt->first->data.first;
-					mapTable[c] = codeStr;
-				}
-				nodeStack.pop_back();
-				codeStr.pop_back();
-				break;
+		case 0:
+			++nodeStackIt->second;
+			if (nullptr != nodeStackIt->first->lchild) {
+				nodeStack.push_back({nodeStackIt->first->lchild, 0});
+				codeStr += CODE_LCHILD;
+			}
+			break;
+		case 1:
+			++nodeStackIt->second;
+			if (nullptr != nodeStackIt->first->rchild) {
+				nodeStack.push_back({nodeStackIt->first->rchild, 0});
+				codeStr += CODE_RCHILD;
+			}
+			break;
+		case 2:
+			if (nodeStackIt->first->lchild == nullptr &&
+					nodeStackIt->first->rchild==nullptr) {
+				char c = nodeStackIt->first->data.first;
+				mapTable[c] = codeStr;
+			}
+			nodeStack.pop_back();
+			codeStr.pop_back();
+			break;
 		}
 	}
 	return mapTable.size();
@@ -140,14 +140,14 @@ std::string HuffmanCoder::Decode(std::string &originStr) const
 			continue;
 		}
 		switch (*itOriginStr) {
-			case CODE_LCHILD:
-				nodePtr = &(*nodePtr)->lchild;
-				break;
-			case CODE_RCHILD:
-				nodePtr = &(*nodePtr)->rchild;
-				break;
-			default:
-				throw std::out_of_range("unknown code: " + *itOriginStr);
+		case CODE_LCHILD:
+			nodePtr = &(*nodePtr)->lchild;
+			break;
+		case CODE_RCHILD:
+			nodePtr = &(*nodePtr)->rchild;
+			break;
+		default:
+			throw std::out_of_range("unknown code: " + *itOriginStr);
 		}
 		++itOriginStr;
 	}

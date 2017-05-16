@@ -11,13 +11,13 @@ template <typename DT>
 class BinaryTreeNode
 {
 	public:
-		using NodePtr = std::shared_ptr<BinaryTreeNode<DT>>;
+	using NodePtr = std::shared_ptr<BinaryTreeNode<DT>>;
 
-		BinaryTreeNode(const DT&, const NodePtr &l = nullptr, const NodePtr &r = nullptr);
+	BinaryTreeNode(const DT&, const NodePtr &l = nullptr, const NodePtr &r = nullptr);
 
-		DT data;
-		NodePtr lchild;
-		NodePtr rchild;
+	DT data;
+	NodePtr lchild;
+	NodePtr rchild;
 };
 
 template <typename DT>
@@ -31,23 +31,23 @@ template <typename DT>
 class BinaryTree
 {
 	public:
-		BinaryTree(const typename BinaryTreeNode<DT>::NodePtr &p = nullptr);
+	BinaryTree(const typename BinaryTreeNode<DT>::NodePtr &p = nullptr);
 
-		const typename BinaryTreeNode<DT>::NodePtr GetRoot() const;
-		void SetRoot(typename BinaryTreeNode<DT>::NodePtr&);
-		std::string GetTreeStruct() const;
-		typename BinaryTreeNode<DT>::NodePtr SetTreeStruct(
-				const std::string&,
-				const std::vector<DT>&);
+	const typename BinaryTreeNode<DT>::NodePtr GetRoot() const;
+	void SetRoot(typename BinaryTreeNode<DT>::NodePtr&);
+	std::string GetTreeStruct() const;
+	typename BinaryTreeNode<DT>::NodePtr SetTreeStruct(
+			const std::string&,
+			const std::vector<DT>&);
 	private:
-		typename BinaryTreeNode<DT>::NodePtr root;
-		static const char CODE_CHLDNULL = '0';
-		static const char CODE_CHLDEXIST = '1';
+	typename BinaryTreeNode<DT>::NodePtr root;
+	static const char CODE_CHLDNULL = '0';
+	static const char CODE_CHLDEXIST = '1';
 
-		std::string GetTreeStructPreOrder() const;
-		typename BinaryTreeNode<DT>::NodePtr SetTreeStructPreOrder(
-				const std::string&,
-				const std::vector<DT>&);
+	std::string GetTreeStructPreOrder() const;
+	typename BinaryTreeNode<DT>::NodePtr SetTreeStructPreOrder(
+			const std::string&,
+			const std::vector<DT>&);
 };
 
 template <typename DT>
@@ -77,26 +77,24 @@ std::string BinaryTree<DT>::GetTreeStructPreOrder() const
 	while (!nodeStack.empty()) {
 		nodeStackIt = nodeStack.rbegin();
 		switch (nodeStackIt->second) {
-			case 0:
-				++nodeStackIt->second;
-				if (nullptr != nodeStackIt->first.lchild) {
-					nodeStack.push_back({nodeStackIt->first.lchild, 0});
-					treeStruct += CODE_CHLDEXIST;
-				} else
-					treeStruct += CODE_CHLDNULL;
-				break;
-			case 1:
-				++nodeStackIt->second;
-				if (nullptr != nodeStackIt->first.rchild) {
-					nodeStack.push_back({nodeStackIt->first.rchild, 0});
-					treeStruct += CODE_CHLDEXIST;
-				} else
-					treeStruct += CODE_CHLDNULL;
-				break;
-			case 2:
-				nodeStack.pop_back();
-				break;
+		case 0:
+			++nodeStackIt->second;
+			treeStruct += nullptr == nodeStackIt->first.lchild ?
+				CODE_CHLDNULL : CODE_CHLDEXIST;
+			nodeStack.push_back({nodeStackIt->first.lchild, 0});
+			break;
+		case 1:
+			++nodeStackIt->second;
+			treeStruct += (nullptr == nodeStackIt->first.rchild) ?
+				CODE_CHLDNULL : CODE_CHLDEXIST;
+			nodeStack.push_back({nodeStackIt->first.rchild, 0});
+			break;
+		case 2:
+			nodeStack.pop_back();
+			break;
 		}
+		if (nullptr == (nodeStack.rbegin()->first))
+			nodeStack.pop_back();
 	}
 	return treeStruct;
 }
@@ -123,30 +121,28 @@ typename BinaryTreeNode<DT>::NodePtr BinaryTree<DT>::SetTreeStructPreOrder(
 	while (!nodeStack.empty() && indexStr < treeStruct.size()) {
 		nodeStackIt = nodeStack.rbegin();
 		switch (nodeStackIt->second) {
-			case 0:
-				++nodeStackIt->second;
-				if (CODE_CHLDEXIST == treeStruct[indexStr++]) {
-					nodeStackIt->first->lchild =
-						std::make_shared<BinaryTreeNode<DT>>(vecData[indexVec]);
-					nodeStack.push_back({nodeStackIt->first->lchild, 0});
-					++indexVec;
-				} else
-					nodeStackIt->first->lchild = nullptr;
-				break;
-			case 1:
-				++nodeStackIt->second;
-				if (CODE_CHLDEXIST == treeStruct[indexStr++]) {
-					nodeStackIt->first->rchild =
-						std::make_shared<BinaryTreeNode<DT>>(vecData[indexVec]);
-					nodeStack.push_back({nodeStackIt->first->rchild, 0});
-					++indexVec;
-				} else
-					nodeStackIt->first->rchild = nullptr;
-				break;
-			case 2:
-				nodeStack.pop_back();
-				break;
+		case 0:
+			++nodeStackIt->second;
+			nodeStackIt->first->lchild =
+				(CODE_CHLDNULL == treeStruct[indexStr++]) ?
+				nullptr :
+				std::make_shared<BinaryTreeNode<DT>>(vecData[indexVec++]);
+			nodeStack.push_back({nodeStackIt->first->lchild, 0});
+			break;
+		case 1:
+			++nodeStackIt->second;
+			nodeStackIt->first->rchild =
+				(CODE_CHLDNULL == treeStruct[indexStr++]) ?
+				nullptr :
+				std::make_shared<BinaryTreeNode<DT>>(vecData[indexVec++]);
+			nodeStack.push_back({nodeStackIt->first->rchild, 0});
+			break;
+		case 2:
+			nodeStack.pop_back();
+			break;
 		}
+		if (nullptr == (nodeStack.rbegin()->first))
+			nodeStack.pop_back();
 	}
 	if (indexStr < treeStruct.size())
 		root = nullptr;
