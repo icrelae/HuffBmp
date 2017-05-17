@@ -102,11 +102,11 @@ std::map<char, std::string>::size_type HuffmanCoder::BuildMapTable(const HuffTre
 	return mapTable.size();
 }
 
-std::string HuffmanCoder::Encode(std::string &originCode) const
+std::string HuffmanCoder::Encode(std::string &originCode)
 {
 	std::string result = "";
 
-	while (originCode.size() > 8) {
+	while (originCode.size() > 7) {
 		// bit code to 'char'
 		std::bitset<8> oneByte =
 			std::bitset<8>(originCode, 0, 8, CODE_LCHILD, CODE_RCHILD);
@@ -122,7 +122,7 @@ std::string HuffmanCoder::Encode(std::string &originCode) const
 	return result;
 }
 
-std::string HuffmanCoder::Decode(std::string &originStr) const
+std::string HuffmanCoder::Decode(std::string &originStr)
 {
 	std::string result = "";
 

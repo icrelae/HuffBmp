@@ -8,7 +8,7 @@
 #include "BinaryTree.h"
 
 class HuffmanCoder: public Coder {
-	public:
+public:
 	using Pair_CU = std::pair<char, unsigned>;
 	using HuffTreeNode = BinaryTreeNode<Pair_CU>;
 	using HuffTreeNodePtr = std::shared_ptr<HuffTreeNode>;
@@ -17,9 +17,9 @@ class HuffmanCoder: public Coder {
 	HuffmanCoder(const std::string&, const std::vector<Pair_CU>&);
 	virtual ~HuffmanCoder();
 
-	virtual std::string Encode(std::string&) const override;
-	virtual std::string Decode(std::string&) const override;
-	private:
+	virtual std::string Encode(std::string&) override;
+	virtual std::string Decode(std::string&) override;
+private:
 	BinaryTree<Pair_CU> huffTree;
 	std::map<char, unsigned> valueWeight;
 	std::map<char, std::string> mapTable;
