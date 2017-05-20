@@ -1,5 +1,5 @@
-#ifndef CODERINFOIO_H
-#define CODERINFOIO_H
+#ifndef _CODERINFOIO_H
+#define _CODERINFOIO_H
 
 #include <iostream>
 
@@ -9,4 +9,4 @@ public:
 	virtual std::ostream& WriteInfo(std::ostream&) = 0;
 };
 
-#endif // CODERINFOIO_H
+#endif // _CODERINFOIO_H
