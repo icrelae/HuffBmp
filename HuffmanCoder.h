@@ -13,18 +13,21 @@ public:
 	using HuffTreeNode = BinaryTreeNode<Pair_CU>;
 	using HuffTreeNodePtr = std::shared_ptr<HuffTreeNode>;
 
+	static const char CODE_LCHILD = '0';
+	static const char CODE_RCHILD = '1';
+
 	HuffmanCoder(const std::map<char, unsigned>&);
 	HuffmanCoder(const std::string&, const std::vector<Pair_CU>&);
 	virtual ~HuffmanCoder();
 
 	virtual std::string Encode(std::string&) override;
 	virtual std::string Decode(std::string&) override;
+	std::string GetHuffTreeStruct() const;
+	std::vector<Pair_CU> GetHuffTreeLeafData() const;
 private:
 	BinaryTree<Pair_CU> huffTree;
 	std::map<char, unsigned> valueWeight;
 	std::map<char, std::string> mapTable;
-	static const char CODE_LCHILD = '0';
-	static const char CODE_RCHILD = '1';
 
 	HuffTreeNodePtr BuildTree() const;
 	static bool SortByWeightAsc(

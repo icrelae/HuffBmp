@@ -155,3 +155,13 @@ std::string HuffmanCoder::Decode(std::string &originStr)
 	originStr = originStr.substr(itLastCodeEnd - originStr.begin());
 	return result;
 }
+
+std::string HuffmanCoder::GetHuffTreeStruct() const
+{
+	return huffTree.GetTreeStruct();
+}
+
+std::vector<HuffmanCoder::Pair_CU> HuffmanCoder::GetHuffTreeLeafData() const
+{
+	return huffTree.GetLeafData();
+}

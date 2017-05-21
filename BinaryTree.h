@@ -5,7 +5,7 @@
 #include <vector>
 #include <list>
 #include <utility>
-#include <function>
+#include <functional>
 
 // BinaryTreeNode
 template <typename DT>
@@ -40,7 +40,7 @@ public:
 	typename BinaryTreeNode<DT>::NodePtr SetTreeStruct(
 			const std::string&,
 			const std::vector<DT>&);
-	std::vector<DT> GetLeafData();
+	std::vector<DT> GetLeafData() const;
 private:
 	typename BinaryTreeNode<DT>::NodePtr root;
 	static const char CODE_CHLDNULL = '0';
@@ -53,7 +53,7 @@ private:
 	std::vector<DT> GetNodeDataPreOrder(
 			std::function
 			<bool(const typename BinaryTreeNode<DT>::NodePtr&)>) const;
-	static bool IsLeaf(const typename BinaryTreeNode<DT>::NodePtr&) const;
+	static bool IsLeaf(const typename BinaryTreeNode<DT>::NodePtr&);
 };
 
 template <typename DT>
@@ -77,7 +77,7 @@ void BinaryTree<DT>::SetRoot(typename BinaryTreeNode<DT>::NodePtr &nodePtr)
 template <typename DT>
 std::string BinaryTree<DT>::GetTreeStruct() const
 {
-	return root == nullptr ? "" : GetTreeStructPreOrder();
+	return (root == nullptr) ? "" : GetTreeStructPreOrder();
 }
 
 template <typename DT>
@@ -99,15 +99,15 @@ std::string BinaryTree<DT>::GetTreeStructPreOrder() const
 		switch (nodeStackIt->second) {
 		case 0:
 			++nodeStackIt->second;
-			treeStruct += (nullptr == nodeStackIt->first.lchild) ?
+			treeStruct += (nullptr == nodeStackIt->first->lchild) ?
 				CODE_CHLDNULL : CODE_CHLDEXIST;
-			nodeStack.push_back({nodeStackIt->first.lchild, 0});
+			nodeStack.push_back({nodeStackIt->first->lchild, 0});
 			break;
 		case 1:
 			++nodeStackIt->second;
-			treeStruct += (nullptr == nodeStackIt->first.rchild) ?
+			treeStruct += (nullptr == nodeStackIt->first->rchild) ?
 				CODE_CHLDNULL : CODE_CHLDEXIST;
-			nodeStack.push_back({nodeStackIt->first.rchild, 0});
+			nodeStack.push_back({nodeStackIt->first->rchild, 0});
 			break;
 		case 2:
 			nodeStack.pop_back();
@@ -162,7 +162,7 @@ typename BinaryTreeNode<DT>::NodePtr BinaryTree<DT>::SetTreeStructPreOrder(
 }
 
 template <typename DT>
-std::vector<DT> BinaryTree<DT>::GetLeafData()
+std::vector<DT> BinaryTree<DT>::GetLeafData() const
 {
 	return GetNodeDataPreOrder(IsLeaf);
 }
@@ -170,7 +170,7 @@ std::vector<DT> BinaryTree<DT>::GetLeafData()
 template <typename DT>
 std::vector<DT> BinaryTree<DT>::GetNodeDataPreOrder(
 		std::function
-		<bool(const typename BinaryTreeNode<DT>::NodePtr&)> &pred) const
+		<bool(const typename BinaryTreeNode<DT>::NodePtr&)> pred) const
 {
 	std::vector<DT> vecData;
 	std::list<std::pair<decltype(root), unsigned char>> nodeStack{{root, 0}};
@@ -180,15 +180,15 @@ std::vector<DT> BinaryTree<DT>::GetNodeDataPreOrder(
 		switch (nodeStackIt->second) {
 		case 0:
 			++nodeStackIt->second;
-			nodeStack.push_back({nodeStackIt->first.lchild, 0});
+			nodeStack.push_back({nodeStackIt->first->lchild, 0});
 			break;
 		case 1:
 			++nodeStackIt->second;
-			nodeStack.push_back({nodeStackIt->first.rchild, 0});
+			nodeStack.push_back({nodeStackIt->first->rchild, 0});
 			break;
 		case 2:
 			if (pred(nodeStackIt->first))
-				vecData.push_back(nodeStackIt->first.data);
+				vecData.push_back(nodeStackIt->first->data);
 			nodeStack.pop_back();
 			break;
 		}
@@ -199,7 +199,7 @@ std::vector<DT> BinaryTree<DT>::GetNodeDataPreOrder(
 }
 
 template <typename DT>
-static bool BinaryTree<DT>::IsLeaf(const typename BinaryTreeNode<DT>::NodePtr &node) const
+bool BinaryTree<DT>::IsLeaf(const typename BinaryTreeNode<DT>::NodePtr &node)
 {
 	return (node->lchild == nullptr && node->rchild == nullptr);
 }
