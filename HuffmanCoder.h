@@ -26,7 +26,7 @@ public:
 	std::vector<Pair_CU> GetHuffTreeLeafData() const;
 private:
 	BinaryTree<Pair_CU> huffTree;
-	std::map<char, unsigned> valueWeight;
+	std::map<char, unsigned> keyWeight;
 	std::map<char, std::string> mapTable;
 
 	HuffTreeNodePtr BuildTree() const;

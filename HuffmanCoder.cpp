@@ -4,7 +4,7 @@
 #include "HuffmanCoder.h"
 
 HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &map)
-	: valueWeight(map)
+	: keyWeight(map)
 {
 	HuffTreeNodePtr root = BuildTree();
 	huffTree.SetRoot(root);
@@ -32,7 +32,7 @@ HuffmanCoder::HuffTreeNodePtr HuffmanCoder::BuildTree() const
 {
 	std::list<HuffmanCoder::HuffTreeNodePtr> lstNodePtr;
 	// cast 'pair<char, unsigned>' into 'HuffTreeNode'
-	for (auto const &pairValWei : valueWeight) {
+	for (auto const &pairValWei : keyWeight) {
 		lstNodePtr.push_back(std::make_shared<HuffTreeNode>(pairValWei));
 	}
 	lstNodePtr.sort(SortByWeightAsc);

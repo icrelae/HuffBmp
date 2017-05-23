@@ -1,4 +1,5 @@
 #include <bitset>
+#include <memory>
 #include <algorithm>
 #include "HuffmanCoderInfoIO.h"
 
@@ -17,9 +18,10 @@ std::istream& HuffmanCoderInfoIO::ReadInfo(std::istream &is)
 	is.read((char*)&leafNodeNmb, sizeof(leafNodeNmb));
 	treeNodeNmb = 2 * leafNodeNmb - 1;
 	size_t treeStructBufSize = (treeNodeNmb + 7) / 8, i = 0;
-	char *buffer = new char[leafNodeNmb + treeStructBufSize];
+	std::shared_ptr<char> bufferSptr(new char[leafNodeNmb + treeStructBufSize]);
+	char *buffer = bufferSptr.get();
 	char *leafDataBuff = buffer, *treeStructBuff = buffer + leafNodeNmb;
-	is.read((char*)buffer, leafNodeNmb + treeStructBufSize);
+	is.read(buffer, leafNodeNmb + treeStructBufSize);
 	leafNodesData.clear();
 	treeStruct.clear();
 	while (i < treeStructBufSize) {
@@ -29,7 +31,6 @@ std::istream& HuffmanCoderInfoIO::ReadInfo(std::istream &is)
 	while (i < leafNodeNmb)
 		leafNodesData.push_back({leafDataBuff[i++], 0});
 	treeStruct.erase(treeNodeNmb);
-	delete []buffer;
 	return is;
 }
 
@@ -39,7 +40,8 @@ std::ostream& HuffmanCoderInfoIO::WriteInfo(std::ostream &os)
 	size_t extra0Len = 8 - treeStruct.size() % 8;
 	std::string treeStructStr = treeStruct + std::string(extra0Len, '0');
 	size_t treeStructBufSize = (treeNodeNmb + 7) / 8, i = 0;
-	char *buffer = new char[leafNodeNmb + treeStructBufSize];
+	std::shared_ptr<char> bufferSptr(new char[leafNodeNmb + treeStructBufSize]);
+	char *buffer = bufferSptr.get();
 	char *leafDataBuff = buffer, *treeStructBuff = buffer + leafNodeNmb;
 	while (i < treeStructBufSize) {
 		std::bitset<8> byte(treeStructStr, i*8, i*8+8);
@@ -49,8 +51,7 @@ std::ostream& HuffmanCoderInfoIO::WriteInfo(std::ostream &os)
 	while (i < leafNodeNmb)
 		*leafDataBuff++ = leafNodesData[i++].first;
 	os.write((char*)&leafNodeNmb, sizeof(leafNodeNmb));
-	os.write((char*)buffer, leafNodeNmb + treeStructBufSize);
-	delete []buffer;
+	os.write(buffer, leafNodeNmb + treeStructBufSize);
 	return os;
 }
 
@@ -128,4 +129,24 @@ bool HuffmanCoderInfoIO::SetTreeInfo(const std::string &ts,
 	else
 		*this = copyInfo;
 	return setOk;
+}
+
+std::istream& HuffmanCoderInfoIO::StatisticKeyWeight(std::istream &is)
+{
+	std::shared_ptr<char> bufferSptr(new char[blockSize]);
+	char *buffer = bufferSptr.get();
+	size_t gcount = blockSize;
+	keyWeight.clear();
+	while (gcount == blockSize) {
+		is.read(buffer, blockSize);
+		gcount = is.gcount();
+		for (size_t i = 0; i < gcount; ++i)
+			++keyWeight[buffer[i]];
+	}
+	return is;
+}
+
+std::map<char, unsigned> HuffmanCoderInfoIO::GetKeyWeight() const
+{
+	return keyWeight;
 }
