@@ -7,10 +7,12 @@
 
 class XorCoderInfoIO: public CoderInfoIO {
 public:
-	XorCoderInfoIO(int);
+	XorCoderInfoIO(int i = 0);
 
 	virtual std::istream& ReadInfo(std::istream&) override;
 	virtual std::ostream& WriteInfo(std::ostream&) override;
+	void SetMgcNmb(int);
+	int GetMgcNmb();
 private:
 	int mgcNmb;
 };

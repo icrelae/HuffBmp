@@ -55,6 +55,11 @@ std::ostream& HuffmanCoderInfoIO::WriteInfo(std::ostream &os)
 	return os;
 }
 
+std::istream& HuffmanCoderInfoIO::Preprocess(std::istream &is)
+{
+	return StatisticKeyWeight(is);
+}
+
 std::istream& HuffmanCoderInfoIO::ReadData(std::istream &is, char *buff, size_t len)
 {
 	while (is && len >= blockSize) {

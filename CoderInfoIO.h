@@ -7,6 +7,9 @@ class CoderInfoIO {
 public:
 	virtual std::istream& ReadInfo(std::istream&) = 0;
 	virtual std::ostream& WriteInfo(std::ostream&) = 0;
+	virtual std::istream& Preprocess(std::istream &is) {
+		return is;
+	}
 };
 
 #endif // _CODERINFOIO_H
