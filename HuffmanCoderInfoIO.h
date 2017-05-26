@@ -1,7 +1,6 @@
 #ifndef _HUFFMANCODERINFOIO_H
 #define _HUFFMANCODERINFOIO_H
 
-#include <iostream>
 #include "CoderInfoIO.h"
 #include "HuffmanCoder.h"
 
@@ -26,6 +25,8 @@ private:
 	static const size_t blockSize = 64;
 	std::vector<HuffmanCoder::Pair_CU> leafNodesData;
 	std::map<char, unsigned> keyWeight;
+	std::allocator<HuffmanCoder> alctHuffmanCoder;
+	// TODO: setting for alctHuffmanCoder
 
 	bool SetTreeStruct(const std::string&);
 	bool SetLeafNodeData(const std::vector<HuffmanCoder::Pair_CU>&);

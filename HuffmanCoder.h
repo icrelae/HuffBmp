@@ -18,6 +18,7 @@ public:
 
 	HuffmanCoder(const std::map<char, unsigned>&);
 	HuffmanCoder(const std::string&, const std::vector<Pair_CU>&);
+	// TODO: add default args and SetXXX() interface?
 	virtual ~HuffmanCoder();
 
 	virtual std::string Encode(std::string&) override;

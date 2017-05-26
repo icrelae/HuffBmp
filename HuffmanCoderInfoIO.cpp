@@ -1,5 +1,4 @@
 #include <bitset>
-#include <memory>
 #include <algorithm>
 #include "HuffmanCoderInfoIO.h"
 
