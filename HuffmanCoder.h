@@ -20,8 +20,8 @@ public:
 	HuffmanCoder(const std::string&, const std::vector<Pair_CU>&);
 	virtual ~HuffmanCoder();
 
-	virtual std::string Encode(std::string&) override;
-	virtual std::string Decode(std::string&) override;
+	virtual std::string Encode(std::string&) const override;
+	virtual std::string Decode(std::string&) const override;
 	std::string GetHuffTreeStruct() const;
 	std::vector<Pair_CU> GetHuffTreeLeafData() const;
 private:

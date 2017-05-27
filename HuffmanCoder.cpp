@@ -102,7 +102,7 @@ std::map<char, std::string>::size_type HuffmanCoder::BuildMapTable(const HuffTre
 	return mapTable.size();
 }
 
-std::string HuffmanCoder::Encode(std::string &originCode)
+std::string HuffmanCoder::Encode(std::string &originCode) const
 {
 	std::string result = "";
 
@@ -122,7 +122,7 @@ std::string HuffmanCoder::Encode(std::string &originCode)
 	return result;
 }
 
-std::string HuffmanCoder::Decode(std::string &originStr)
+std::string HuffmanCoder::Decode(std::string &originStr) const
 {
 	std::string result = "";
 
