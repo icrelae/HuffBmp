@@ -12,7 +12,7 @@ namespace {
 }
 
 // passing 'mgcNmb' in when decode, leave it empty when encode
-XorCoder::XorCoder(int mgcNmb): mgcNmbsIndex(0)
+XorCoder::XorCoder(int mgcNmb): mgcNmbsIndex(std::make_shared<size_t>(0))
 {
 	SetMgcNmb(mgcNmb);
 }
@@ -21,7 +21,7 @@ XorCoder::~XorCoder()
 {
 }
 
-std::string XorCoder::Encode(std::string &originCode)
+std::string XorCoder::Encode(std::string &originCode) const
 {
 	std::string result = "";
 	
@@ -32,14 +32,14 @@ std::string XorCoder::Encode(std::string &originCode)
 		char code = static_cast<unsigned char>(oneByte.to_ulong());
 		// index determained by plaintext so we don't change 'code' here
 		// as opposed to 'Decode'
-		result += code ^ mgcNmbs[mgcNmbsIndex];
-		mgcNmbsIndex = (code >> 2) % 4;
+		result += code ^ mgcNmbs[*mgcNmbsIndex];
+		*mgcNmbsIndex = (code >> 2) % 4;
 		originCode = originCode.erase(0, 8);
 	}
 	return result;
 }
 
-std::string XorCoder::Decode(std::string &originCode)
+std::string XorCoder::Decode(std::string &originCode) const
 {
 	std::string result = "";
 	
@@ -50,17 +50,17 @@ std::string XorCoder::Decode(std::string &originCode)
 		char code = static_cast<unsigned char>(oneByte.to_ulong());
 		// index determained by plaintext so we change the 'code' here
 		// as opposed to 'Encode'
-		code ^= mgcNmbs[mgcNmbsIndex];
+		code ^= mgcNmbs[*mgcNmbsIndex];
 		result += code;
-		mgcNmbsIndex = (code >> 2) % 4;
+		*mgcNmbsIndex = (code >> 2) % 4;
 		originCode = originCode.erase(0, 8);
 	}
 	return result;
 }
 
-void XorCoder::ResetVecMgcNmbIndex(size_t i)
+void XorCoder::ResetVecMgcNmbIndex(size_t i) const
 {
-	mgcNmbsIndex = i;
+	*mgcNmbsIndex = i;
 }
 
 int XorCoder::SetMgcNmb(int mgcNmb)
@@ -68,6 +68,7 @@ int XorCoder::SetMgcNmb(int mgcNmb)
 	int i = 0, mgcNmbNot0 = mgcNmb;
 	char *mgcNmbPtr = reinterpret_cast<char*>(&mgcNmb);
 	while (i++ < 4) {
+		// if mgcNmb==0, generate 4 random value(not 0) for mgcNmb
 		while (!mgcNmbNot0 && *mgcNmbPtr == 0)
 			*mgcNmbPtr = distChar(randomEngine);
 		mgcNmbs.push_back(*mgcNmbPtr++);
