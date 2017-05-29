@@ -2,27 +2,42 @@
 #include <algorithm>
 #include "HuffmanCoderInfoIO.h"
 
+// static member need not only declaration with 'static' but also definition
+// without 'static'
+std::allocator<HuffmanCoder> HuffmanCoderInfoIO::alctHuffmanCoder;
+
+HuffmanCoderInfoIO::HuffmanCoderInfoIO(): coderPtr(nullptr)
+{
+}
+
 HuffmanCoderInfoIO::HuffmanCoderInfoIO(const std::string &ts,
 			const std::vector<HuffmanCoder::Pair_CU> &nodesData)
+	: coderPtr(nullptr)
 {
 	SetTreeInfo(ts, nodesData);
 }
 
 HuffmanCoderInfoIO::~HuffmanCoderInfoIO()
 {
+	if (coderPtr)
+		alctHuffmanCoder.deallocate(coderPtr, 1);
+	coderPtr = nullptr;
 }
 
 std::istream& HuffmanCoderInfoIO::ReadInfo(std::istream &is)
 {
+	size_t leafNodeNmb, treeNodeNmb, treeStructBufSize, i = 0;
 	is.read((char*)&leafNodeNmb, sizeof(leafNodeNmb));
 	treeNodeNmb = 2 * leafNodeNmb - 1;
-	size_t treeStructBufSize = (treeNodeNmb + 7) / 8, i = 0;
+	treeStructBufSize = (treeNodeNmb + 7) / 8;
 	std::shared_ptr<char> bufferSptr(new char[leafNodeNmb + treeStructBufSize]);
 	char *buffer = bufferSptr.get();
-	char *leafDataBuff = buffer, *treeStructBuff = buffer + leafNodeNmb;
 	is.read(buffer, leafNodeNmb + treeStructBufSize);
-	leafNodesData.clear();
-	treeStruct.clear();
+	if (is.gcount() < static_cast<std::streamsize>(leafNodeNmb + treeStructBufSize))
+		return is;
+	std::vector<HuffmanCoder::Pair_CU> leafNodesData;
+	std::string treeStruct;
+	char *leafDataBuff = buffer, *treeStructBuff = buffer + leafNodeNmb;
 	while (i < treeStructBufSize) {
 		treeStruct += std::bitset<8>(treeStructBuff[i]).to_string();
 		leafNodesData.push_back({leafDataBuff[i++], 0});
@@ -30,6 +45,7 @@ std::istream& HuffmanCoderInfoIO::ReadInfo(std::istream &is)
 	while (i < leafNodeNmb)
 		leafNodesData.push_back({leafDataBuff[i++], 0});
 	treeStruct.erase(treeNodeNmb);
+	SetTreeInfo(treeStruct, leafNodesData);
 	return is;
 }
 
@@ -59,22 +75,6 @@ std::istream& HuffmanCoderInfoIO::Preprocess(std::istream &is)
 	return StatisticKeyWeight(is);
 }
 
-std::istream& HuffmanCoderInfoIO::ReadData(std::istream &is, char *buff, size_t len)
-{
-	while (is && len >= blockSize) {
-		is.read(buff, blockSize);
-		buff += blockSize;
-		len -= blockSize;
-	}
-	if (is && len > 0) {
-		is.read(buff, len);
-		len -= is.gcount();
-	}
-	if (!is)
-		throw std::out_of_range("istream error");
-	return is;
-}
-
 // binaryTreeStruct: 00 11 11 00 ... -> huffmanTreeStruct: 0 1 1 0
 bool HuffmanCoderInfoIO::SetTreeStruct(const std::string &ts)
 {
@@ -100,10 +100,16 @@ bool HuffmanCoderInfoIO::SetLeafNodeData(
 		const std::vector<HuffmanCoder::Pair_CU> &nodesData)
 {
 	bool setOk = true;
-	if (nodesData.size() == leafNodeNmb)
+	if (nodesData.size() == leafNodeNmb) {
 		leafNodesData = nodesData;
-	else
+	} else {
 		setOk = false;
+		leafNodesData.clear();
+		treeStruct.clear();
+		alctHuffmanCoder.destroy(coderPtr);
+		alctHuffmanCoder.deallocate(coderPtr, 1);
+		coderPtr = nullptr;
+	}
 	return setOk;
 }
 
@@ -128,10 +134,17 @@ bool HuffmanCoderInfoIO::SetTreeInfo(const std::string &ts,
 {
 	bool setOk = false;
 	HuffmanCoderInfoIO copyInfo = *this;
-	if (SetTreeStruct(ts) && SetLeafNodeData(nodesData))
+	if (SetTreeStruct(ts) && SetLeafNodeData(nodesData)) {
 		setOk = true;
-	else
+		if (nullptr == coderPtr) {
+			coderPtr = alctHuffmanCoder.allocate(1);
+			alctHuffmanCoder.construct(coderPtr, treeStruct, leafNodesData);
+		} else {
+			coderPtr->SetHuffTreeStruct(treeStruct, leafNodesData);
+		}
+	} else {
 		*this = copyInfo;
+	}
 	return setOk;
 }
 
@@ -147,10 +160,21 @@ std::istream& HuffmanCoderInfoIO::StatisticKeyWeight(std::istream &is)
 		for (size_t i = 0; i < gcount; ++i)
 			++keyWeight[buffer[i]];
 	}
+	if (nullptr == coderPtr) {
+		coderPtr = alctHuffmanCoder.allocate(1);
+		alctHuffmanCoder.construct(coderPtr, keyWeight);
+	} else {
+		coderPtr->SetKeyWeight(keyWeight);
+	}
 	return is;
 }
 
 std::map<char, unsigned> HuffmanCoderInfoIO::GetKeyWeight() const
 {
 	return keyWeight;
+}
+
+const Coder* HuffmanCoderInfoIO::GetCoder() const
+{
+	return coderPtr;
 }

@@ -130,7 +130,8 @@ typename BinaryTreeNode<DT>::NodePtr BinaryTree<DT>::SetTreeStructPreOrder(
 	root = std::make_shared<BinaryTreeNode<DT>>(rootData);
 	std::list<std::pair<decltype(root), unsigned char>> nodeStack{{root, 0}};
 	typename decltype(nodeStack)::reverse_iterator nodeStackIt;
-	while (!nodeStack.empty() && indexStr < treeStruct.size()) {
+	while (indexStr < treeStruct.size() && indexVec < vecData.size()
+			&& !nodeStack.empty()) {
 		nodeStackIt = nodeStack.rbegin();
 		switch (nodeStackIt->second) {
 		case 0:
@@ -156,7 +157,7 @@ typename BinaryTreeNode<DT>::NodePtr BinaryTree<DT>::SetTreeStructPreOrder(
 		if (nullptr == (nodeStack.rbegin()->first))
 			nodeStack.pop_back();
 	}
-	if (indexStr < treeStruct.size())
+	if (indexStr < treeStruct.size() || indexVec < vecData.size())
 		root = nullptr;
 	return root;
 }

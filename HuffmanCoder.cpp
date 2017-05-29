@@ -3,8 +3,8 @@
 #include <bitset>
 #include "HuffmanCoder.h"
 
-HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &map)
-	: keyWeight(map)
+HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &m)
+	: keyWeight(m)
 {
 	HuffTreeNodePtr root = BuildTree();
 	huffTree.SetRoot(root);
@@ -164,4 +164,19 @@ std::string HuffmanCoder::GetHuffTreeStruct() const
 std::vector<HuffmanCoder::Pair_CU> HuffmanCoder::GetHuffTreeLeafData() const
 {
 	return huffTree.GetLeafData();
+}
+
+void HuffmanCoder::SetKeyWeight(const std::map<char, unsigned> &m)
+{
+	keyWeight = m;
+	HuffTreeNodePtr root = BuildTree();
+	huffTree.SetRoot(root);
+	BuildMapTable(huffTree.GetRoot());
+}
+
+void HuffmanCoder::SetHuffTreeStruct(
+		const std::string &treeStruct, const std::vector<Pair_CU> &leafData)
+{
+	huffTree.SetTreeStruct(treeStruct, leafData);
+	BuildMapTable(huffTree.GetRoot());
 }

@@ -13,8 +13,7 @@ public:
 	virtual std::istream& Preprocess(std::istream &is) {
 		return is;
 	}
-private:
-	Coder *coderPtr;
+	virtual const Coder* GetCoder() const = 0;
 };
 
 #endif // _CODERINFOIO_H

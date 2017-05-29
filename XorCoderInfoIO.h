@@ -8,13 +8,16 @@
 class XorCoderInfoIO: public CoderInfoIO {
 public:
 	XorCoderInfoIO(int i = 0);
+	~XorCoderInfoIO();
 
 	virtual std::istream& ReadInfo(std::istream&) override;
 	virtual std::ostream& WriteInfo(std::ostream&) override;
+	virtual const Coder* GetCoder() const override;
 	void SetMgcNmb(int);
 	int GetMgcNmb();
 private:
 	int mgcNmb;
+	XorCoder *coderPtr;
 };
 
 #endif // _XORCODERINFOIO_H
