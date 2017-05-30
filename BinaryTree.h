@@ -113,7 +113,7 @@ std::string BinaryTree<DT>::GetTreeStructPreOrder() const
 			nodeStack.pop_back();
 			break;
 		}
-		if (nullptr == (nodeStack.rbegin()->first))
+		if (nodeStack.size() > 0 && nullptr == (nodeStack.rbegin()->first))
 			nodeStack.pop_back();
 	}
 	return treeStruct;
@@ -193,7 +193,7 @@ std::vector<DT> BinaryTree<DT>::GetNodeDataPreOrder(
 			nodeStack.pop_back();
 			break;
 		}
-		if (nullptr == (nodeStack.rbegin()->first))
+		if (nodeStack.size() > 0 && nullptr == (nodeStack.rbegin()->first))
 			nodeStack.pop_back();
 	}
 	return vecData;

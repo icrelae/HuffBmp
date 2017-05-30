@@ -72,7 +72,10 @@ std::ostream& HuffmanCoderInfoIO::WriteInfo(std::ostream &os)
 
 std::istream& HuffmanCoderInfoIO::Preprocess(std::istream &is)
 {
-	return StatisticKeyWeight(is);
+	StatisticKeyWeight(is);
+	treeNodeNmb = treeStruct.size() / 2;
+	leafNodeNmb = leafNodesData.size();
+	return is;
 }
 
 // binaryTreeStruct: 00 11 11 00 ... -> huffmanTreeStruct: 0 1 1 0
@@ -166,6 +169,8 @@ std::istream& HuffmanCoderInfoIO::StatisticKeyWeight(std::istream &is)
 	} else {
 		coderPtr->SetKeyWeight(keyWeight);
 	}
+	treeStruct = coderPtr->GetHuffTreeStruct();
+	leafNodesData = coderPtr->GetHuffTreeLeafData();
 	return is;
 }
 

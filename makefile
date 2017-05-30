@@ -1,5 +1,5 @@
-CXXFLAGS=-Wall
-OBJS= Main.o HuffmanCoder.o XorCoder.o XorCoderInfoIO.o HuffmanCoderInfoIO.o
+CXXFLAGS=-Wall -g
+OBJS= Main.o HuffmanCoder.o XorCoder.o XorCoderInfoIO.o HuffmanCoderInfoIO.o EncodeStrategy.o
 target="HuffBmp.out"
 
 ${target}: ${OBJS}
@@ -15,6 +15,9 @@ XorCoderInfoIO.o: XorCoderInfoIO.cpp XorCoderInfoIO.h XorCoder.h CoderInfoIO.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
 HuffmanCoderInfoIO.o: HuffmanCoderInfoIO.cpp HuffmanCoderInfoIO.h HuffmanCoder.h CoderInfoIO.h
+	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
+
+EncodeStrategy.o: EncodeStrategy.cpp EncodeStrategy.h CoderInfoIO.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
 .PHONY: cleanall clean
