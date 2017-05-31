@@ -8,6 +8,8 @@
 class HuffmanCoderInfoIO: public CoderInfoIO {
 public:
 	HuffmanCoderInfoIO();
+	HuffmanCoderInfoIO(const HuffmanCoderInfoIO&);
+	HuffmanCoderInfoIO(HuffmanCoderInfoIO&&);
 	HuffmanCoderInfoIO(const std::string&,
 			const std::vector<HuffmanCoder::Pair_CU>&);
 	virtual ~HuffmanCoderInfoIO();
@@ -16,6 +18,10 @@ public:
 	virtual std::ostream& WriteInfo(std::ostream&) override;
 	virtual std::istream& Preprocess(std::istream&) override;
 	virtual const Coder* GetCoder() const override;
+
+	HuffmanCoderInfoIO& operator=(const HuffmanCoderInfoIO&);
+	HuffmanCoderInfoIO& operator=(HuffmanCoderInfoIO&&);
+
 	bool SetTreeInfo(const std::string&,
 			const std::vector<HuffmanCoder::Pair_CU>&);
 	std::string GetTreeStruct() const;

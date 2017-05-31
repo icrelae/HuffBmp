@@ -3,16 +3,21 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "HuffmanCoderInfoIO.h"
 #include "EncodeStrategy.h"
+#include "DecodeStrategy.h"
+#include "HuffmanCoderInfoIO.h"
+#include "XorCoderInfoIO.h"
 
 using namespace std;
 
 int main(int argc, char **argv)
 {
-	HuffmanCoderInfoIO huffman;
-	EncodeStrategy encoderStg(&huffman);
-	encoderStg.Encode("/tmp/tmp", "/tmp/tmp.huf");
+	XorCoderInfoIO xorCoder;
+	HuffmanCoderInfoIO huffmanCoder;
+	EncodeStrategy encoderStg(&huffmanCoder);
+	DecodeStrategy decoderStg(&huffmanCoder);
+	encoderStg.Encode("/tmp/tmp", "/tmp/tmp.cipher");
+	decoderStg.Decode("/tmp/tmp.cipher", "/tmp/tmp.plain");
 
 	return 0;
 }

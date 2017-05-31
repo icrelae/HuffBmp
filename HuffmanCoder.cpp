@@ -3,6 +3,20 @@
 #include <bitset>
 #include "HuffmanCoder.h"
 
+HuffmanCoder::HuffmanCoder(const HuffmanCoder &coder)
+{
+	huffTree = coder.huffTree;
+	keyWeight = coder.keyWeight;
+	mapTable = coder.mapTable;
+}
+
+HuffmanCoder::HuffmanCoder(HuffmanCoder &&coder)
+{
+	huffTree = std::move(coder.huffTree);
+	keyWeight = std::move(coder.keyWeight);
+	mapTable = std::move(coder.mapTable);
+}
+
 HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &m)
 	: keyWeight(m)
 {
@@ -20,6 +34,22 @@ HuffmanCoder::HuffmanCoder(
 
 HuffmanCoder::~HuffmanCoder()
 {
+}
+
+HuffmanCoder& HuffmanCoder::operator=(const HuffmanCoder &coder)
+{
+	huffTree = coder.huffTree;
+	keyWeight = coder.keyWeight;
+	mapTable = coder.mapTable;
+	return *this;
+}
+
+HuffmanCoder& HuffmanCoder::operator=(HuffmanCoder &&coder)
+{
+	huffTree = std::move(coder.huffTree);
+	keyWeight = std::move(coder.keyWeight);
+	mapTable = std::move(coder.mapTable);
+	return *this;
 }
 
 bool HuffmanCoder::SortByWeightAsc(const HuffTreeNodePtr &lhs,

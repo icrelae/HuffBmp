@@ -13,7 +13,7 @@ public:
 	virtual std::istream& ReadInfo(std::istream&) override;
 	virtual std::ostream& WriteInfo(std::ostream&) override;
 	virtual const Coder* GetCoder() const override;
-	void SetMgcNmb(int);
+	int SetMgcNmb(int);
 	int GetMgcNmb();
 private:
 	int mgcNmb;

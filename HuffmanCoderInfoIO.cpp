@@ -10,8 +10,28 @@ HuffmanCoderInfoIO::HuffmanCoderInfoIO(): coderPtr(nullptr)
 {
 }
 
+HuffmanCoderInfoIO::HuffmanCoderInfoIO(const HuffmanCoderInfoIO &coderInfo)
+	: leafNodeNmb(coderInfo.leafNodeNmb), treeNodeNmb(coderInfo.treeNodeNmb),
+	treeStruct(coderInfo.treeStruct), leafNodesData(coderInfo.leafNodesData),
+	keyWeight(coderInfo.keyWeight)
+{
+	coderPtr = alctHuffmanCoder.allocate(1);
+	alctHuffmanCoder.construct(coderPtr, *coderInfo.coderPtr);
+}
+
+HuffmanCoderInfoIO::HuffmanCoderInfoIO(HuffmanCoderInfoIO &&coderInfo)
+	: leafNodeNmb(std::move(coderInfo.leafNodeNmb)),
+	treeNodeNmb(std::move(coderInfo.treeNodeNmb)),
+	treeStruct(std::move(coderInfo.treeStruct)),
+	leafNodesData(std::move(coderInfo.leafNodesData)),
+	keyWeight(std::move(coderInfo.keyWeight))
+{
+	coderPtr = coderInfo.coderPtr;
+	coderInfo.coderPtr = nullptr;
+}
+
 HuffmanCoderInfoIO::HuffmanCoderInfoIO(const std::string &ts,
-			const std::vector<HuffmanCoder::Pair_CU> &nodesData)
+		const std::vector<HuffmanCoder::Pair_CU> &nodesData)
 	: coderPtr(nullptr)
 {
 	SetTreeInfo(ts, nodesData);
@@ -19,9 +39,42 @@ HuffmanCoderInfoIO::HuffmanCoderInfoIO(const std::string &ts,
 
 HuffmanCoderInfoIO::~HuffmanCoderInfoIO()
 {
-	if (coderPtr)
+	if (coderPtr) {
+		alctHuffmanCoder.destroy(coderPtr);
 		alctHuffmanCoder.deallocate(coderPtr, 1);
+	}
 	coderPtr = nullptr;
+}
+
+HuffmanCoderInfoIO& HuffmanCoderInfoIO::operator=(const HuffmanCoderInfoIO &coderInfo)
+{
+	leafNodeNmb = coderInfo.leafNodeNmb;
+	treeNodeNmb = coderInfo.treeNodeNmb;
+	treeStruct = coderInfo.treeStruct;
+	leafNodesData = coderInfo.leafNodesData;
+	keyWeight = coderInfo.keyWeight;
+	if (coderPtr)
+		alctHuffmanCoder.destroy(coderPtr);
+	else
+		alctHuffmanCoder.allocate(1);
+	alctHuffmanCoder.construct(coderPtr, *coderInfo.coderPtr);
+	return *this;
+}
+
+HuffmanCoderInfoIO& HuffmanCoderInfoIO::operator=(HuffmanCoderInfoIO &&coderInfo)
+{
+	leafNodeNmb = std::move(coderInfo.leafNodeNmb);
+	treeNodeNmb = std::move(coderInfo.treeNodeNmb);
+	treeStruct = std::move(coderInfo.treeStruct);
+	leafNodesData = std::move(coderInfo.leafNodesData);
+	keyWeight = std::move(coderInfo.keyWeight);
+	if (coderPtr) {
+		alctHuffmanCoder.destroy(coderPtr);
+		alctHuffmanCoder.deallocate(coderPtr, 1);
+	}
+	coderPtr = coderInfo.coderPtr;
+	coderInfo.coderPtr = nullptr;
+	return *this;
 }
 
 std::istream& HuffmanCoderInfoIO::ReadInfo(std::istream &is)
@@ -45,15 +98,25 @@ std::istream& HuffmanCoderInfoIO::ReadInfo(std::istream &is)
 	while (i < leafNodeNmb)
 		leafNodesData.push_back({leafDataBuff[i++], 0});
 	treeStruct.erase(treeNodeNmb);
+	// copy single bit into double bit to describe one tree node
+	std::string::iterator itTreeStruct = treeStruct.begin();
+	while (itTreeStruct < treeStruct.end()) {
+		itTreeStruct = treeStruct.insert(itTreeStruct+1, *itTreeStruct);
+		++itTreeStruct;
+	}
 	SetTreeInfo(treeStruct, leafNodesData);
 	return is;
 }
 
 std::ostream& HuffmanCoderInfoIO::WriteInfo(std::ostream &os)
 {
+	// shrink double bit into single bit to describe one tree node
+	std::string treeStructStr;
+	for (size_t i = 0; i < treeStruct.size() / 2; ++i)
+		treeStructStr += treeStruct[2 * i];
 	/* append '0' to fill up 8 bit */
-	size_t extra0Len = 8 - treeStruct.size() % 8;
-	std::string treeStructStr = treeStruct + std::string(extra0Len, '0');
+	size_t extra0Len = 8 - treeStructStr.size() % 8;
+	treeStructStr += std::string(extra0Len, '0');
 	size_t treeStructBufSize = (treeNodeNmb + 7) / 8, i = 0;
 	std::shared_ptr<char> bufferSptr(new char[leafNodeNmb + treeStructBufSize]);
 	char *buffer = bufferSptr.get();
@@ -83,12 +146,7 @@ bool HuffmanCoderInfoIO::SetTreeStruct(const std::string &ts)
 {
 	bool setOk = false;
 	if (CheckTreeStruct(ts)) {
-		leafNodeNmb = ts.size() / 2;
-		treeNodeNmb = 2 * leafNodeNmb - 1;
-		// n2 + n0 = n; 2 * n2 + 1 = n; n2 + 1 = n0;
-		treeStruct.clear();
-		for (size_t i = 0; i < leafNodeNmb; ++i)
-			treeStruct += ts[i * 2];
+		treeStruct = ts;
 		setOk = true;
 	}
 	return setOk;
@@ -109,6 +167,7 @@ bool HuffmanCoderInfoIO::SetLeafNodeData(
 		setOk = false;
 		leafNodesData.clear();
 		treeStruct.clear();
+		leafNodeNmb = treeNodeNmb = 0;
 		alctHuffmanCoder.destroy(coderPtr);
 		alctHuffmanCoder.deallocate(coderPtr, 1);
 		coderPtr = nullptr;

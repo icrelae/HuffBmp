@@ -32,7 +32,7 @@ std::string XorCoder::Encode(std::string &originCode) const
 		char code = static_cast<unsigned char>(oneByte.to_ulong());
 		// index determained by plaintext so we don't change 'code' here
 		// as opposed to 'Decode'
-		result += code ^ mgcNmbs[*mgcNmbsIndex];
+		result += std::bitset<8>(code ^ mgcNmbs[*mgcNmbsIndex]).to_string();
 		*mgcNmbsIndex = (code >> 2) % 4;
 		originCode = originCode.erase(0, 8);
 	}
@@ -51,7 +51,7 @@ std::string XorCoder::Decode(std::string &originCode) const
 		// index determained by plaintext so we change the 'code' here
 		// as opposed to 'Encode'
 		code ^= mgcNmbs[*mgcNmbsIndex];
-		result += code;
+		result += std::bitset<8>(code).to_string();
 		*mgcNmbsIndex = (code >> 2) % 4;
 		originCode = originCode.erase(0, 8);
 	}
@@ -67,12 +67,14 @@ int XorCoder::SetMgcNmb(int mgcNmb)
 {
 	int i = 0, mgcNmbNot0 = mgcNmb;
 	char *mgcNmbPtr = reinterpret_cast<char*>(&mgcNmb);
+	mgcNmbs.clear();
 	while (i++ < 4) {
 		// if mgcNmb==0, generate 4 random value(not 0) for mgcNmb
 		while (!mgcNmbNot0 && *mgcNmbPtr == 0)
 			*mgcNmbPtr = distChar(randomEngine);
 		mgcNmbs.push_back(*mgcNmbPtr++);
 	}
+	*mgcNmbsIndex = 0;
 	return mgcNmb;
 }
 

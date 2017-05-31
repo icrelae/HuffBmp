@@ -1,26 +1,24 @@
 #include <fstream>
 #include <memory>
 #include <bitset>
-#include "EncodeStrategy.h"
+#include "DecodeStrategy.h"
 
-EncodeStrategy::EncodeStrategy(CoderInfoIO *p): coderInfoPtr(p)
+DecodeStrategy::DecodeStrategy(CoderInfoIO *p): coderInfoPtr(p)
 {
 }
 
-void EncodeStrategy::SetCoderInfoPtr(CoderInfoIO *p)
+void DecodeStrategy::SetCoderInfoPtr(CoderInfoIO *p)
 {
 	coderInfoPtr = p;
 }
 
-int EncodeStrategy::Encode(const std::string &iFile, const std::string &oFile)
+int DecodeStrategy::Decode(const std::string &iFile, const std::string &oFile)
 {
 	std::ifstream ifs(iFile, std::fstream::binary);
 	std::ofstream ofs(oFile, std::fstream::binary);
 	if (!ifs || !ofs)
 		throw std::runtime_error("cannot open file!");
-	coderInfoPtr->Preprocess(ifs);
-	ifs.clear();
-	ifs.seekg(std::fstream::beg);	// useless if seekg before clear
+	coderInfoPtr->ReadInfo(ifs);
 
 	const Coder *coderPtr = coderInfoPtr->GetCoder();
 	size_t gcount = readBlockSize, writeBufferIndex;
@@ -28,29 +26,24 @@ int EncodeStrategy::Encode(const std::string &iFile, const std::string &oFile)
 	std::shared_ptr<char> writeBufferSp(new char[writeBlockSize]);
 	char *readBuffer = readBufferSp.get();
 	char *writeBuffer = writeBufferSp.get();
-	std::string originCode, cipherCode;
-	coderInfoPtr->WriteInfo(ofs);
+	std::string originCode, plainCode;
 	while (gcount == readBlockSize) {
 		ifs.read(readBuffer, readBlockSize);
 		gcount = ifs.gcount();
 		for (size_t i = 0; i < gcount; ++i)
 			originCode += std::bitset<8>(readBuffer[i]).to_string();
-		cipherCode = coderPtr->Encode(originCode);
-		if (originCode.size() !=  0)
-			throw std::runtime_error("encode error(originCode != 0)!");
+		plainCode = coderPtr->Decode(originCode);
 		writeBufferIndex = 0;
-		while (cipherCode.size() > 7) {
-			std::bitset<8> oneByte = std::bitset<8>(cipherCode, 0, 8);
+		while (plainCode.size() > 7) {
+			std::bitset<8> oneByte = std::bitset<8>(plainCode, 0, 8);
 			const char c = static_cast<char>(oneByte.to_ulong());
 			writeBuffer[writeBufferIndex++] = c;
-			cipherCode.erase(0, 8);
+			plainCode.erase(0, 8);
 		}
 		ofs.write(writeBuffer, writeBufferIndex);
 	}
-	if (cipherCode.size() > 0) {
-		cipherCode += std::string(8 - cipherCode.size(), '0');
-		ofs.write(&cipherCode[0], 1);
-	}
+	if (originCode.size() !=  0)
+		throw std::runtime_error("decode error(originCode != 0)!");
 
 	return 0;
 }

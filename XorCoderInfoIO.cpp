@@ -16,6 +16,7 @@ XorCoderInfoIO::~XorCoderInfoIO()
 std::istream& XorCoderInfoIO::ReadInfo(std::istream &is)
 {
 	is.read((char*)&mgcNmb, sizeof(mgcNmb));
+	coderPtr->SetMgcNmb(mgcNmb);
 	return is;
 }
 
@@ -25,13 +26,13 @@ std::ostream& XorCoderInfoIO::WriteInfo(std::ostream &os)
 	return os;
 }
 
-void XorCoderInfoIO::SetMgcNmb(int i)
+int XorCoderInfoIO::SetMgcNmb(int i)
 {
-	mgcNmb = i;
 	if (coderPtr) {
-		coderPtr->SetMgcNmb(i);
+		mgcNmb = coderPtr->SetMgcNmb(i);
 		coderPtr->ResetVecMgcNmbIndex();
 	}
+	return mgcNmb;
 }
 
 int XorCoderInfoIO::GetMgcNmb()
