@@ -19,6 +19,8 @@ private:
 	static const char CODE_ZERO = '0';
 	static const char CODE_ONE = '1';
 	std::vector<char> mgcNmbs;
+	// encode|decode have to change this index-value, this is conflict with
+	// their 'const' declaration, so here using ptr to work around
 	std::shared_ptr<size_t> const mgcNmbsIndex;
 };
 

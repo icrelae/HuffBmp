@@ -1,7 +1,6 @@
 #ifndef _HUFFMANCODERINFOIO_H
 #define _HUFFMANCODERINFOIO_H
 
-#include <iostream>
 #include "CoderInfoIO.h"
 #include "HuffmanCoder.h"
 
@@ -10,8 +9,7 @@ public:
 	HuffmanCoderInfoIO();
 	HuffmanCoderInfoIO(const HuffmanCoderInfoIO&);
 	HuffmanCoderInfoIO(HuffmanCoderInfoIO&&);
-	HuffmanCoderInfoIO(const std::string&,
-			const std::vector<HuffmanCoder::Pair_CU>&);
+	HuffmanCoderInfoIO(const std::string&, const std::vector<HuffmanCoder::Pair_CU>&);
 	virtual ~HuffmanCoderInfoIO();
 
 	virtual std::istream& ReadInfo(std::istream&) override;
@@ -22,8 +20,7 @@ public:
 	HuffmanCoderInfoIO& operator=(const HuffmanCoderInfoIO&);
 	HuffmanCoderInfoIO& operator=(HuffmanCoderInfoIO&&);
 
-	bool SetTreeInfo(const std::string&,
-			const std::vector<HuffmanCoder::Pair_CU>&);
+	bool SetTreeInfo(const std::string&, const std::vector<HuffmanCoder::Pair_CU>&);
 	std::string GetTreeStruct() const;
 	std::vector<HuffmanCoder::Pair_CU> GetLeafNodeData() const;
 	std::map<char, unsigned> GetKeyWeight() const;
@@ -36,7 +33,6 @@ private:
 	std::map<char, unsigned> keyWeight;
 	HuffmanCoder *coderPtr;
 	static std::allocator<HuffmanCoder> alctHuffmanCoder;
-	// TODO: setting for alctHuffmanCoder
 
 	bool SetTreeStruct(const std::string&);
 	bool SetLeafNodeData(const std::vector<HuffmanCoder::Pair_CU>&);

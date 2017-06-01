@@ -18,6 +18,9 @@ int EncodeStrategy::Encode(const std::string &iFile, const std::string &oFile)
 	std::ofstream ofs(oFile, std::fstream::binary);
 	if (!ifs || !ofs)
 		throw std::runtime_error("cannot open file!");
+
+	size_t fileSize = GetFileSize(ifs);
+	ofs.write((char*)&fileSize, sizeof(fileSize));
 	coderInfoPtr->Preprocess(ifs);
 	ifs.clear();
 	ifs.seekg(std::fstream::beg);	// useless if seekg before clear
@@ -35,7 +38,7 @@ int EncodeStrategy::Encode(const std::string &iFile, const std::string &oFile)
 		gcount = ifs.gcount();
 		for (size_t i = 0; i < gcount; ++i)
 			originCode += std::bitset<8>(readBuffer[i]).to_string();
-		cipherCode = coderPtr->Encode(originCode);
+		cipherCode += coderPtr->Encode(originCode);
 		if (originCode.size() !=  0)
 			throw std::runtime_error("encode error(originCode != 0)!");
 		writeBufferIndex = 0;
@@ -49,8 +52,20 @@ int EncodeStrategy::Encode(const std::string &iFile, const std::string &oFile)
 	}
 	if (cipherCode.size() > 0) {
 		cipherCode += std::string(8 - cipherCode.size(), '0');
-		ofs.write(&cipherCode[0], 1);
+		std::bitset<8> oneByte = std::bitset<8>(cipherCode, 0, 8);
+		const char c = static_cast<char>(oneByte.to_ulong());
+		ofs.write(&c, 1);
 	}
 
 	return 0;
+}
+
+size_t EncodeStrategy::GetFileSize(std::istream &is)
+{
+	std::streampos pos = is.tellg();
+	is.seekg(0, std::fstream::end);
+	size_t fileSize = is.tellg();
+	is.clear();
+	is.seekg(pos);
+	return fileSize;
 }

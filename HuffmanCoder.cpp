@@ -28,7 +28,7 @@ HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &m)
 HuffmanCoder::HuffmanCoder(
 		const std::string &treeStruct, const std::vector<Pair_CU> &leafData)
 {
-	huffTree.SetTreeStruct(treeStruct, leafData);
+	huffTree.SetTreeStruct(treeStruct, leafData, huffTree.IsLeaf);
 	BuildMapTable(huffTree.GetRoot());
 }
 
@@ -68,6 +68,9 @@ HuffmanCoder::HuffTreeNodePtr HuffmanCoder::BuildTree() const
 	lstNodePtr.sort(SortByWeightAsc);
 	HuffTreeNodePtr newNode;
 	decltype(lstNodePtr)::const_iterator lstIt1, lstIt2;
+	// if only one keyWord, copy it to build tree
+	if (1 == lstNodePtr.size())
+		lstNodePtr.push_back(*lstNodePtr.begin());
 	while (1 < lstNodePtr.size()) {
 		// merge first two node in 'newNode' as lchild and rchild
 		lstIt1 = lstIt2 = lstNodePtr.begin();
@@ -161,14 +164,6 @@ std::string HuffmanCoder::Decode(std::string &originStr) const
 	std::string::const_iterator itOriginStr = originStr.begin();
 	std::string::const_iterator itLastCodeEnd = itOriginStr;
 	while(itOriginStr != originStr.end()) {
-		if ((*nodePtr)->lchild == nullptr && (*nodePtr)->rchild == nullptr) {
-			// leaf of huffmanTree, get data and reset 'nodePtr'
-			result += (*nodePtr)->data.first;
-			nodePtr = &root;
-			// record last end of completed code
-			itLastCodeEnd = itOriginStr;
-			continue;
-		}
 		switch (*itOriginStr) {
 		case CODE_LCHILD:
 			nodePtr = &(*nodePtr)->lchild;
@@ -179,10 +174,17 @@ std::string HuffmanCoder::Decode(std::string &originStr) const
 		default:
 			throw std::out_of_range("unknown code: " + *itOriginStr);
 		}
+		if ((*nodePtr)->lchild == nullptr && (*nodePtr)->rchild == nullptr) {
+			// leaf of huffmanTree, get data and reset 'nodePtr'
+			result += std::bitset<8>((*nodePtr)->data.first).to_string();
+			nodePtr = &root;
+			// record last end of completed code
+			itLastCodeEnd = itOriginStr;
+		}
 		++itOriginStr;
 	}
 	// return the rest of originStr
-	originStr = originStr.substr(itLastCodeEnd - originStr.begin());
+	originStr.erase(originStr.begin(), itLastCodeEnd + 1);
 	return result;
 }
 
@@ -207,6 +209,6 @@ void HuffmanCoder::SetKeyWeight(const std::map<char, unsigned> &m)
 void HuffmanCoder::SetHuffTreeStruct(
 		const std::string &treeStruct, const std::vector<Pair_CU> &leafData)
 {
-	huffTree.SetTreeStruct(treeStruct, leafData);
+	huffTree.SetTreeStruct(treeStruct, leafData, huffTree.IsLeaf);
 	BuildMapTable(huffTree.GetRoot());
 }

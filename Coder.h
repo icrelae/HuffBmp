@@ -3,8 +3,6 @@
 
 class Coder {
 public:
-	virtual ~Coder() { };
-
 	virtual std::string Encode(std::string&) const = 0;
 	virtual std::string Decode(std::string&) const = 0;
 };

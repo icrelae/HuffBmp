@@ -1,7 +1,6 @@
 #ifndef _XORCODERINFOIO_H
 #define _XORCODERINFOIO_H
 
-#include <iostream>
 #include "CoderInfoIO.h"
 #include "XorCoder.h"
 
