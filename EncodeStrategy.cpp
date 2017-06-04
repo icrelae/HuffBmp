@@ -15,15 +15,18 @@ void EncodeStrategy::SetCoderInfoPtr(CoderInfoIO *p)
 int EncodeStrategy::Encode(const std::string &iFile, const std::string &oFile)
 {
 	std::ifstream ifs(iFile, std::fstream::binary);
-	std::ofstream ofs(oFile, std::fstream::binary);
+	std::fstream ofs(oFile, std::fstream::binary | std::fstream::in | std::fstream::out);
 	if (!ifs || !ofs)
 		throw std::runtime_error("cannot open file!");
 
 	size_t fileSize = GetFileSize(ifs);
 	ofs.write((char*)&fileSize, sizeof(fileSize));
-	coderInfoPtr->Preprocess(ifs);
+	if (RSLTOK != coderInfoPtr->Preprocess(ifs, ofs))
+		throw std::runtime_error("preprocess error");
 	ifs.clear();
+	ofs.clear();
 	ifs.seekg(std::fstream::beg);	// useless if seekg before clear
+	ofs.seekg(std::fstream::beg);
 
 	const Coder *coderPtr = coderInfoPtr->GetCoder();
 	size_t gcount = readBlockSize, writeBufferIndex;
@@ -65,7 +68,6 @@ size_t EncodeStrategy::GetFileSize(std::istream &is)
 	std::streampos pos = is.tellg();
 	is.seekg(0, std::fstream::end);
 	size_t fileSize = is.tellg();
-	is.clear();
 	is.seekg(pos);
 	return fileSize;
 }

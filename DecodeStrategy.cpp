@@ -16,7 +16,7 @@ int DecodeStrategy::Decode(const std::string &iFile, const std::string &oFile)
 {
 	size_t fileSize, writedSize = 0;
 	std::ifstream ifs(iFile, std::fstream::binary);
-	std::ofstream ofs(oFile, std::fstream::binary);
+	std::ofstream ofs(oFile, std::fstream::binary | std::fstream::app);
 	if (!ifs || !ofs)
 		throw std::runtime_error("cannot open file!");
 
