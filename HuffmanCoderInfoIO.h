@@ -15,6 +15,9 @@ public:
 	virtual std::istream& ReadInfo(std::istream&) override;
 	virtual std::ostream& WriteInfo(std::ostream&) override;
 	virtual std::istream& Preprocess(std::istream&) override;
+	virtual std::istream& Read(std::istream&, char*, size_t) override;
+	virtual std::ostream& Write(std::ostream&, char*, size_t) override;
+	virtual size_t Gcount() override;
 	virtual const Coder* GetCoder() const override;
 
 	HuffmanCoderInfoIO& operator=(const HuffmanCoderInfoIO&);
@@ -27,6 +30,7 @@ public:
 private:
 	size_t leafNodeNmb;
 	size_t treeNodeNmb;
+	size_t gcount;
 	std::string treeStruct;
 	static const size_t blockSize = 64;
 	std::vector<HuffmanCoder::Pair_CU> leafNodesData;

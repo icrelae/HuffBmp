@@ -40,6 +40,24 @@ int XorCoderInfoIO::GetMgcNmb()
 	return mgcNmb;
 }
 
+std::istream& XorCoderInfoIO::Read(std::istream &is, char *buf, size_t size)
+{
+	is.read(buf, size);
+	gcount = is.gcount();
+	return is;
+}
+
+std::ostream& XorCoderInfoIO::Write(std::ostream &os, char *buf, size_t size)
+{
+	os.write(buf, size);
+	return os;
+}
+
+size_t XorCoderInfoIO::Gcount()
+{
+	return gcount;
+}
+
 const Coder* XorCoderInfoIO::GetCoder() const
 {
 	return coderPtr;

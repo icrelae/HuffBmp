@@ -13,8 +13,9 @@ class CoderInfoIO {
 public:
 	virtual std::istream& ReadInfo(std::istream&) = 0;
 	virtual std::ostream& WriteInfo(std::ostream&) = 0;
-	virtual std::istream& read(char*, size_t) = 0;
-	virtual std::ostream& write(char*, size_t) = 0;
+	virtual std::istream& Read(std::istream&, char*, size_t) = 0;
+	virtual std::ostream& Write(std::ostream&, char*, size_t) = 0;
+	virtual size_t Gcount() = 0;
 	virtual enum PreprcsRslt Preprocess(std::istream&, std::istream&) {
 		return RSLTOK;
 	}

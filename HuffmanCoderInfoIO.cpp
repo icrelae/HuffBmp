@@ -243,6 +243,24 @@ std::map<char, unsigned> HuffmanCoderInfoIO::GetKeyWeight() const
 	return keyWeight;
 }
 
+std::istream& HuffmanCoderInfoIO::Read(std::istream &is, char *buf, size_t size)
+{
+	is.read(buf, size);
+	gcount = is.gcount();
+	return is;
+}
+
+std::ostream& HuffmanCoderInfoIO::Write(std::ostream &os, char *buf, size_t size)
+{
+	os.write(buf, size);
+	return os;
+}
+
+size_t HuffmanCoderInfoIO::Gcount()
+{
+	return gcount;
+}
+
 const Coder* HuffmanCoderInfoIO::GetCoder() const
 {
 	return coderPtr;
