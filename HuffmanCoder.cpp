@@ -17,8 +17,7 @@ HuffmanCoder::HuffmanCoder(HuffmanCoder &&coder)
 	mapTable = std::move(coder.mapTable);
 }
 
-HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &m)
-	: keyWeight(m)
+HuffmanCoder::HuffmanCoder(const std::map<char, unsigned> &m): keyWeight(m)
 {
 	HuffTreeNodePtr root = BuildTree();
 	huffTree.SetRoot(root);

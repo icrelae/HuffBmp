@@ -13,8 +13,6 @@ private:
 	CoderInfoIO *coderInfoPtr;
 	static const size_t readBlockSize = 64;
 	static const size_t writeBlockSize = readBlockSize * 5;
-
-	static size_t GetFileSize(std::istream&);
 };
 
 #endif // _ENCODESTRATEGY_H

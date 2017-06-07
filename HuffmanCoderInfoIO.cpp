@@ -1,5 +1,6 @@
 #include <bitset>
 #include <algorithm>
+#include <fstream>
 #include "HuffmanCoderInfoIO.h"
 
 // static member need not only declaration with 'static' but also a definition
@@ -80,7 +81,7 @@ HuffmanCoderInfoIO& HuffmanCoderInfoIO::operator=(HuffmanCoderInfoIO &&coderInfo
 std::istream& HuffmanCoderInfoIO::ReadInfo(std::istream &is)
 {
 	size_t leafNodeNmb, treeNodeNmb, treeStructBufSize, i = 0;
-	is.read((char*)&leafNodeNmb, sizeof(leafNodeNmb));
+	is.read(reinterpret_cast<char*>(&leafNodeNmb), sizeof(leafNodeNmb));
 	treeNodeNmb = 2 * leafNodeNmb - 1;
 	treeStructBufSize = (treeNodeNmb + 7) / 8;
 
@@ -134,15 +135,22 @@ std::ostream& HuffmanCoderInfoIO::WriteInfo(std::ostream &os)
 	while (i < leafNodeNmb)
 		*leafDataBuff++ = leafNodesData[i++].first;
 
-	os.write((char*)&leafNodeNmb, sizeof(leafNodeNmb));
+	os.write(reinterpret_cast<char*>(&leafNodeNmb), sizeof(leafNodeNmb));
 	os.write(buffer, leafNodeNmb + treeStructBufSize);
 	return os;
 }
 
-std::istream& HuffmanCoderInfoIO::Preprocess(std::istream &is)
+enum PreprcsRslt HuffmanCoderInfoIO::Preprocess(std::istream &is)
 {
+	is.read(reinterpret_cast<char*>(&fileSize), sizeof(fileSize));
+	return RSLTOK;
+}
+enum PreprcsRslt HuffmanCoderInfoIO::Preprocess(std::istream &is, std::iostream &os)
+{
+	fileSize = CalcFileSize(is);
+	os.write(reinterpret_cast<char*>(&fileSize), sizeof(fileSize));
 	StatisticKeyWeight(is);
-	return is;
+	return RSLTOK;
 }
 
 bool HuffmanCoderInfoIO::SetTreeStruct(const std::string &ts)
@@ -219,12 +227,12 @@ std::istream& HuffmanCoderInfoIO::StatisticKeyWeight(std::istream &is)
 {
 	std::shared_ptr<char> bufferSptr(new char[blockSize]);
 	char *buffer = bufferSptr.get();
-	size_t gcount = blockSize;
+	size_t readCount = blockSize;
 	keyWeight.clear();
-	while (gcount == blockSize) {
+	while (readCount == blockSize) {
 		is.read(buffer, blockSize);
-		gcount = is.gcount();
-		for (size_t i = 0; i < gcount; ++i)
+		readCount = is.gcount();
+		for (size_t i = 0; i < readCount; ++i)
 			++keyWeight[buffer[i]];
 	}
 	if (nullptr == coderPtr) {
@@ -256,12 +264,26 @@ std::ostream& HuffmanCoderInfoIO::Write(std::ostream &os, char *buf, size_t size
 	return os;
 }
 
-size_t HuffmanCoderInfoIO::Gcount()
+size_t HuffmanCoderInfoIO::Gcount() const
 {
 	return gcount;
+}
+
+size_t HuffmanCoderInfoIO::GetFileSize() const
+{
+	return fileSize;
 }
 
 const Coder* HuffmanCoderInfoIO::GetCoder() const
 {
 	return coderPtr;
+}
+
+size_t HuffmanCoderInfoIO::CalcFileSize(std::istream &is)
+{
+	std::streampos pos = is.tellg();
+	is.seekg(0, std::fstream::end);
+	size_t fileSize = is.tellg();
+	is.seekg(pos);
+	return fileSize;
 }

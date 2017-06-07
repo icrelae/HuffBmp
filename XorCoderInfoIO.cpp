@@ -15,14 +15,14 @@ XorCoderInfoIO::~XorCoderInfoIO()
 
 std::istream& XorCoderInfoIO::ReadInfo(std::istream &is)
 {
-	is.read((char*)&mgcNmb, sizeof(mgcNmb));
+	is.read(reinterpret_cast<char*>(&mgcNmb), sizeof(mgcNmb));
 	coderPtr->SetMgcNmb(mgcNmb);
 	return is;
 }
 
 std::ostream& XorCoderInfoIO::WriteInfo(std::ostream &os)
 {
-	os.write((char*)&mgcNmb, sizeof(mgcNmb));
+	os.write(reinterpret_cast<char*>(&mgcNmb), sizeof(mgcNmb));
 	return os;
 }
 
@@ -53,7 +53,7 @@ std::ostream& XorCoderInfoIO::Write(std::ostream &os, char *buf, size_t size)
 	return os;
 }
 
-size_t XorCoderInfoIO::Gcount()
+size_t XorCoderInfoIO::Gcount() const
 {
 	return gcount;
 }

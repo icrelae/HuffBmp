@@ -16,12 +16,13 @@ int DecodeStrategy::Decode(const std::string &iFile, const std::string &oFile)
 {
 	size_t fileSize, writedSize = 0;
 	std::ifstream ifs(iFile, std::fstream::binary);
-	std::ofstream ofs(oFile, std::fstream::binary | std::fstream::app);
+	std::ofstream ofs(oFile, std::fstream::binary);
 	if (!ifs || !ofs)
 		throw std::runtime_error("cannot open file!");
 
-	ifs.read((char*)&fileSize, sizeof(fileSize));
+	coderInfoPtr->Preprocess(ifs);
 	coderInfoPtr->ReadInfo(ifs);
+	fileSize = coderInfoPtr->GetFileSize();
 
 	const Coder *coderPtr = coderInfoPtr->GetCoder();
 	size_t gcount = readBlockSize, writeBufferIndex;
@@ -31,8 +32,8 @@ int DecodeStrategy::Decode(const std::string &iFile, const std::string &oFile)
 	char *writeBuffer = writeBufferSp.get();
 	std::string originCode, plainCode;
 	while (gcount == readBlockSize) {
-		ifs.read(readBuffer, readBlockSize);
-		gcount = ifs.gcount();
+		coderInfoPtr->Read(ifs, readBuffer, readBlockSize);
+		gcount = coderInfoPtr->Gcount();
 		for (size_t i = 0; i < gcount; ++i)
 			originCode += std::bitset<8>(readBuffer[i]).to_string();
 		plainCode += coderPtr->Decode(originCode);
@@ -43,12 +44,12 @@ int DecodeStrategy::Decode(const std::string &iFile, const std::string &oFile)
 			writeBuffer[writeBufferIndex++] = c;
 			plainCode.erase(0, 8);
 		}
-		if (writedSize + writeBufferIndex > fileSize)
+		if (fileSize && writedSize + writeBufferIndex > fileSize)
 			writeBufferIndex = fileSize - writedSize;
 		ofs.write(writeBuffer, writeBufferIndex);
 		writedSize += writeBufferIndex;
 	}
-	if (writedSize != fileSize)
+	if (fileSize && writedSize != fileSize)
 		throw std::runtime_error("decode error(writedSize != fileSize)!");
 
 	return 0;

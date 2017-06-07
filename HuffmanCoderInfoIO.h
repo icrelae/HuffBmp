@@ -14,10 +14,12 @@ public:
 
 	virtual std::istream& ReadInfo(std::istream&) override;
 	virtual std::ostream& WriteInfo(std::ostream&) override;
-	virtual std::istream& Preprocess(std::istream&) override;
+	virtual enum PreprcsRslt Preprocess(std::istream&) override;
+	virtual enum PreprcsRslt Preprocess(std::istream&, std::iostream&) override;
 	virtual std::istream& Read(std::istream&, char*, size_t) override;
 	virtual std::ostream& Write(std::ostream&, char*, size_t) override;
-	virtual size_t Gcount() override;
+	virtual size_t Gcount() const override;
+	virtual size_t GetFileSize() const override;
 	virtual const Coder* GetCoder() const override;
 
 	HuffmanCoderInfoIO& operator=(const HuffmanCoderInfoIO&);
@@ -31,6 +33,7 @@ private:
 	size_t leafNodeNmb;
 	size_t treeNodeNmb;
 	size_t gcount;
+	size_t fileSize;
 	std::string treeStruct;
 	static const size_t blockSize = 64;
 	std::vector<HuffmanCoder::Pair_CU> leafNodesData;
@@ -42,6 +45,7 @@ private:
 	bool SetLeafNodeData(const std::vector<HuffmanCoder::Pair_CU>&);
 	bool CheckTreeStruct(const std::string&) const;
 	std::istream& StatisticKeyWeight(std::istream&);
+	static size_t CalcFileSize(std::istream &is);
 };
 
 #endif // _HUFFMANCODERINFOIO_H
