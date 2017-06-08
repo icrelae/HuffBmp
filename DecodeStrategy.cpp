@@ -37,13 +37,14 @@ int DecodeStrategy::Decode(const std::string &iFile, const std::string &oFile)
 		for (size_t i = 0; i < gcount; ++i)
 			originCode += std::bitset<8>(readBuffer[i]).to_string();
 		plainCode += coderPtr->Decode(originCode);
-		writeBufferIndex = 0;
-		while (plainCode.size() > 7) {
-			std::bitset<8> oneByte = std::bitset<8>(plainCode, 0, 8);
+		size_t iNextByte = writeBufferIndex = 0;
+		while ((plainCode.size() - iNextByte) > 7) {
+			std::bitset<8> oneByte = std::bitset<8>(plainCode, iNextByte, 8);
 			const char c = static_cast<char>(oneByte.to_ulong());
 			writeBuffer[writeBufferIndex++] = c;
-			plainCode.erase(0, 8);
+			iNextByte += 8;
 		}
+		plainCode.erase(0, iNextByte);
 		if (fileSize && writedSize + writeBufferIndex > fileSize)
 			writeBufferIndex = fileSize - writedSize;
 		ofs.write(writeBuffer, writeBufferIndex);

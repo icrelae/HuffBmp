@@ -24,37 +24,41 @@ XorCoder::~XorCoder()
 std::string XorCoder::Encode(std::string &originCode) const
 {
 	std::string result = "";
+	size_t iNextByte = 0;
 	
-	while (originCode.size() > 7) {
+	while ((originCode.size() - iNextByte) > 7) {
 		// bit code to 'char'
 		std::bitset<8> oneByte =
-			std::bitset<8>(originCode, 0, 8, CODE_ZERO, CODE_ONE);
+			std::bitset<8>(originCode, iNextByte, 8, CODE_ZERO, CODE_ONE);
 		char code = static_cast<unsigned char>(oneByte.to_ulong());
 		// index determained by plaintext so we don't change 'code' here
 		// as opposed to 'Decode'
 		result += std::bitset<8>(code ^ mgcNmbs[*mgcNmbsIndex]).to_string();
 		*mgcNmbsIndex = (code >> 2) % 4;
-		originCode = originCode.erase(0, 8);
+		iNextByte += 8;
 	}
+	originCode = originCode.erase(0, iNextByte);
 	return result;
 }
 
 std::string XorCoder::Decode(std::string &originCode) const
 {
 	std::string result = "";
+	size_t iNextByte = 0;
 	
-	while (originCode.size() > 7) {
+	while ((originCode.size() - iNextByte) > 7) {
 		// bit code to 'char'
 		std::bitset<8> oneByte =
-			std::bitset<8>(originCode, 0, 8, CODE_ZERO, CODE_ONE);
+			std::bitset<8>(originCode, iNextByte, 8, CODE_ZERO, CODE_ONE);
 		char code = static_cast<unsigned char>(oneByte.to_ulong());
 		// index determained by plaintext so we change the 'code' here
 		// as opposed to 'Encode'
 		code ^= mgcNmbs[*mgcNmbsIndex];
 		result += std::bitset<8>(code).to_string();
 		*mgcNmbsIndex = (code >> 2) % 4;
-		originCode = originCode.erase(0, 8);
+		iNextByte += 8;
 	}
+	originCode = originCode.erase(0, iNextByte);
 	return result;
 }
 

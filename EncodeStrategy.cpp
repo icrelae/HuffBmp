@@ -44,13 +44,14 @@ int EncodeStrategy::Encode(const std::string &iFile, const std::string &oFile)
 		cipherCode += coderPtr->Encode(originCode);
 		if (originCode.size() != 0)
 			throw std::runtime_error("encode error(originCode != 0)!");
-		writeBufferIndex = 0;
-		while (cipherCode.size() > 7) {
-			std::bitset<8> oneByte = std::bitset<8>(cipherCode, 0, 8);
+		size_t iNextByte = writeBufferIndex = 0;
+		while ((cipherCode.size() - iNextByte) > 7) {
+			std::bitset<8> oneByte = std::bitset<8>(cipherCode, iNextByte, 8);
 			char c = static_cast<char>(oneByte.to_ulong());
 			writeBuffer[writeBufferIndex++] = c;
-			cipherCode.erase(0, 8);
+			iNextByte += 8;
 		}
+		cipherCode.erase(0, iNextByte);
 		coderInfoPtr->Write(ofs, writeBuffer, writeBufferIndex);
 	}
 	if (cipherCode.size() > 0) {

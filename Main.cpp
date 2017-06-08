@@ -14,8 +14,8 @@ int main(int argc, char **argv)
 {
 	XorCoderInfoIO xorCoder;
 	HuffmanCoderInfoIO huffmanCoder;
-	EncodeStrategy encoderStg(&huffmanCoder);
-	DecodeStrategy decoderStg(&huffmanCoder);
+	EncodeStrategy encoderStg(&xorCoder);
+	DecodeStrategy decoderStg(&xorCoder);
 	encoderStg.Encode("/tmp/tmp", "/tmp/tmp.cipher");
 	decoderStg.Decode("/tmp/tmp.cipher", "/tmp/tmp.plain");
 

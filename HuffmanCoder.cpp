@@ -137,11 +137,12 @@ std::map<char, std::string>::size_type HuffmanCoder::BuildMapTable(const HuffTre
 std::string HuffmanCoder::Encode(std::string &originCode) const
 {
 	std::string result = "";
+	size_t iNextByte = 0;
 
-	while (originCode.size() > 7) {
+	while ((originCode.size() - iNextByte) > 7) {
 		// bit code to 'char'
 		std::bitset<8> oneByte =
-			std::bitset<8>(originCode, 0, 8, CODE_LCHILD, CODE_RCHILD);
+			std::bitset<8>(originCode, iNextByte, 8, CODE_LCHILD, CODE_RCHILD);
 		const char key = static_cast<char>(oneByte.to_ulong());
 		//result += mapTable[c];	// invalid, if map[k] non-exist it will be inserted,
 						// but current func is 'const'
@@ -149,8 +150,9 @@ std::string HuffmanCoder::Encode(std::string &originCode) const
 		if (itMapTable == mapTable.end())
 			throw std::out_of_range("no value for key: " + key);
 		result += itMapTable->second;
-		originCode.erase(0, 8);
+		iNextByte += 8;
 	}
+	originCode.erase(0, iNextByte);
 	return result;
 }
 
