@@ -1,6 +1,8 @@
 #ifndef _CODER_H
 #define _CODER_H
 
+#include <string>
+
 class Coder {
 public:
 	virtual std::string Encode(std::string&) const = 0;
