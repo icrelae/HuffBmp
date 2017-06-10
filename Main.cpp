@@ -32,8 +32,6 @@ void TestHuff()
 
 int main(int argc, char **argv)
 {
-	TestXor();
-	TestHuff();
 	std::ifstream ifs(string(argv[1]), fstream::binary);
 	BmpCoderInfoIO bmpCoder;
 	bmpCoder.ReadBmpFileHeader(ifs);
