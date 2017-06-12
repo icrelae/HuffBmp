@@ -1,6 +1,38 @@
 #include "BmpCoderInfoIO.h"
 
-void BmpCoderInfoIO::ReadBmpFileHeader(std::istream &is)
+std::istream& BmpCoderInfoIO::ReadInfo(std::istream &is)
+{
+	ReadBmpFileHeader(is, bmpFileHdr);
+	ReadBmpInfoHeader(is, bmpInfoHdr);
+	return is;
+}
+
+std::ostream& BmpCoderInfoIO::WriteInfo(std::ostream &os)
+{
+	return os;
+}
+
+enum PreprcsRslt BmpCoderInfoIO::Preprocess(std::istream &is)
+{
+	enum PreprcsRslt preprcsResult= RSLTERROR;
+	ReadBmpFileHeader(is, bmpFileHdr);
+	ReadBmpInfoHeader(is, bmpInfoHdr);
+	if (IsValidBmp(bmpFileHdr, bmpInfoHdr))
+		preprcsResult = RSLTOK;
+	return preprcsResult;
+}
+
+enum PreprcsRslt BmpCoderInfoIO::Preprocess(std::istream &is, std::iostream &os)
+{
+	enum PreprcsRslt preprcsResult= RSLTERROR;
+	ReadBmpFileHeader(os, bmpFileHdr);
+	ReadBmpInfoHeader(os, bmpInfoHdr);
+	if (IsValidBmp(bmpFileHdr, bmpInfoHdr))
+		preprcsResult = RSLTOK;
+	return preprcsResult;
+}
+
+void BmpCoderInfoIO::ReadBmpFileHeader(std::istream &is, BmpFileHeader &bmpFileHdr)
 {
 	is.read((char*)&bmpFileHdr.bfType, sizeof(bmpFileHdr.bfType));
 	is.read((char*)&bmpFileHdr.bfSize, sizeof(bmpFileHdr.bfSize));
@@ -9,7 +41,7 @@ void BmpCoderInfoIO::ReadBmpFileHeader(std::istream &is)
 	is.read((char*)&bmpFileHdr.bfOffBits, sizeof(bmpFileHdr.bfOffBits));
 }
 
-void BmpCoderInfoIO::ReadBmpInfoHeader(std::istream &is)
+void BmpCoderInfoIO::ReadBmpInfoHeader(std::istream &is, BmpInfoHeader &bmpInfoHdr)
 {
 	is.read((char*)&bmpInfoHdr.biSize, sizeof(bmpInfoHdr.biSize));
 	is.read((char*)&bmpInfoHdr.biWidth, sizeof(bmpInfoHdr.biWidth));
@@ -22,4 +54,9 @@ void BmpCoderInfoIO::ReadBmpInfoHeader(std::istream &is)
 	is.read((char*)&bmpInfoHdr.biYPelsPerMeter, sizeof(bmpInfoHdr.biYPelsPerMeter));
 	is.read((char*)&bmpInfoHdr.biClrUsed, sizeof(bmpInfoHdr.biClrUsed));
 	is.read((char*)&bmpInfoHdr.biClrImportant, sizeof(bmpInfoHdr.biClrImportant));
+}
+
+bool BmpCoderInfoIO::IsValidBmp(const BmpFileHeader &fileHdr, const BmpInfoHeader &infoHdr)
+{
+	return (fileHdr.bfType == 0x424d && (infoHdr.biBitCount == 24 || infoHdr.biBitCount == 32));
 }

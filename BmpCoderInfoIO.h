@@ -18,10 +18,13 @@ public:
 	virtual enum PreprcsRslt Preprocess(std::istream&, std::iostream&) override;
 	virtual const Coder* GetCoder() const override;
 
-	void ReadBmpFileHeader(std::istream&);
-	void ReadBmpInfoHeader(std::istream&);
+	static void ReadBmpFileHeader(std::istream&, BmpFileHeader&);
+	static void ReadBmpInfoHeader(std::istream&, BmpInfoHeader&);
+private:
 	BmpFileHeader bmpFileHdr;
 	BmpInfoHeader bmpInfoHdr;
+
+	bool IsValidBmp(const BmpFileHeader&, const BmpInfoHeader&);
 };
 
 #endif // _BMPCODERINFOIO_H
