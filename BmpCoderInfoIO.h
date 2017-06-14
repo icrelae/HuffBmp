@@ -2,6 +2,7 @@
 #define _BMPCODERINFOIO_H
 // 2017.06.09 21:22
 
+#include <bitset>
 #include "CoderInfoIO.h"
 #include "BmpCoder.h"
 
@@ -23,6 +24,7 @@ public:
 private:
 	BmpFileHeader bmpFileHdr;
 	BmpInfoHeader bmpInfoHdr;
+	std::bitset<8> mask;
 
 	bool IsValidBmp(const BmpFileHeader&, const BmpInfoHeader&);
 };
