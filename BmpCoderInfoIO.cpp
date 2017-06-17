@@ -4,11 +4,13 @@ std::istream& BmpCoderInfoIO::ReadInfo(std::istream &is)
 {
 	ReadBmpFileHeader(is, bmpFileHdr);
 	ReadBmpInfoHeader(is, bmpInfoHdr);
+	// TODO: read mask
 	return is;
 }
 
 std::ostream& BmpCoderInfoIO::WriteInfo(std::ostream &os)
 {
+	// TODO: write mask
 	return os;
 }
 
@@ -30,6 +32,16 @@ enum PreprcsRslt BmpCoderInfoIO::Preprocess(std::istream &is, std::iostream &os)
 	if (IsValidBmp(bmpFileHdr, bmpInfoHdr))
 		preprcsResult = RSLTOK;
 	return preprcsResult;
+}
+
+void BmpCoderInfoIO::ReadBmpFileHeader(std::istream &is)
+{
+	ReadBmpFileHeader(is, bmpFileHdr);
+}
+
+void BmpCoderInfoIO::ReadBmpInfoHeader(std::istream &is)
+{
+	ReadBmpInfoHeader(is, bmpInfoHdr);
 }
 
 void BmpCoderInfoIO::ReadBmpFileHeader(std::istream &is, BmpFileHeader &bmpFileHdr)
@@ -58,5 +70,34 @@ void BmpCoderInfoIO::ReadBmpInfoHeader(std::istream &is, BmpInfoHeader &bmpInfoH
 
 bool BmpCoderInfoIO::IsValidBmp(const BmpFileHeader &fileHdr, const BmpInfoHeader &infoHdr)
 {
-	return (fileHdr.bfType == 0x424d && (infoHdr.biBitCount == 24 || infoHdr.biBitCount == 32));
+	bool isValidBmp = true;
+	if (fileHdr.bfType != 0x424d)		// BM
+		isValidBmp = false;
+	if (fileHdr.bfReserved1 != 0x4842)	// HB
+		isValidBmp = false;
+	if (infoHdr.biBitCount != 24)
+		isValidBmp = false;
+	return isValidBmp;
+}
+
+std::istream& BmpCoderInfoIO::Read(std::istream &is, char *buf, size_t size)
+{
+	// TODO
+	return is;
+}
+
+std::ostream& BmpCoderInfoIO::Write(std::ostream &os, char *buf, size_t size)
+{
+	// TODO
+	return os;
+}
+
+size_t BmpCoderInfoIO::Gcount() const
+{
+	return gcount;
+}
+
+const Coder* BmpCoderInfoIO::GetCoder() const
+{
+	return coderPtr;
 }

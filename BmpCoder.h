@@ -28,7 +28,7 @@ public:
 	unsigned int biClrImportant;
 };
 
-class BmpCoder: Coder {
+class BmpCoder: public Coder {
 public:
 	virtual std::string Encode(std::string&) const override;
 	virtual std::string Decode(std::string&) const override;

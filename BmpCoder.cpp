@@ -3,15 +3,15 @@
 
 std::string BmpCoder::Encode(std::string &originCode) const
 {
-	std::string result = originCode;
-	originCode.clear();
+	std::string result = "";
+	std::swap(result, originCode);
 	return result;
 }
 
 std::string BmpCoder::Decode(std::string &originCode) const
 {
-	std::string result = originCode;
-	originCode.clear();
+	std::string result = "";
+	std::swap(result, originCode);
 	return result;
 }
 
