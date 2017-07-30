@@ -2,14 +2,20 @@
 
 std::istream& BmpCoderInfoIO::ReadInfo(std::istream &is)
 {
+	char first3Byte[3];
 	ReadBmpFileHeader(is, bmpFileHdr);
 	ReadBmpInfoHeader(is, bmpInfoHdr);
-	// TODO: read mask
+	is.read(first3Byte, sizeof(first3Byte));
+	mask = 0;
+	for (size_t i = 0; i < sizeof(first3Byte)/sizeof(first3Byte[0]); ++i)
+		mask |= (first3Byte[i] & 0x01) << i;
 	return is;
 }
 
 std::ostream& BmpCoderInfoIO::WriteInfo(std::ostream &os)
 {
+	WriteBmpFileHeader(os, bmpFileHdr);
+	WriteBmpInfoHeader(os, bmpInfoHdr);
 	// TODO: write mask
 	return os;
 }
@@ -66,6 +72,30 @@ void BmpCoderInfoIO::ReadBmpInfoHeader(std::istream &is, BmpInfoHeader &bmpInfoH
 	is.read((char*)&bmpInfoHdr.biYPelsPerMeter, sizeof(bmpInfoHdr.biYPelsPerMeter));
 	is.read((char*)&bmpInfoHdr.biClrUsed, sizeof(bmpInfoHdr.biClrUsed));
 	is.read((char*)&bmpInfoHdr.biClrImportant, sizeof(bmpInfoHdr.biClrImportant));
+}
+
+void BmpCoderInfoIO::WriteBmpFileHeader(std::ostream &os, BmpFileHeader &bmpFileHdr)
+{
+	os.write((char*)&bmpFileHdr.bfType, sizeof(bmpFileHdr.bfType));
+	os.write((char*)&bmpFileHdr.bfSize, sizeof(bmpFileHdr.bfSize));
+	os.write((char*)&bmpFileHdr.bfReserved1, sizeof(bmpFileHdr.bfReserved1));
+	os.write((char*)&bmpFileHdr.bfReserved2, sizeof(bmpFileHdr.bfReserved2));
+	os.write((char*)&bmpFileHdr.bfOffBits, sizeof(bmpFileHdr.bfOffBits));
+}
+
+void BmpCoderInfoIO::WriteBmpInfoHeader(std::ostream &os, BmpInfoHeader &bmpInfoHdr)
+{
+	os.write((char*)&bmpInfoHdr.biSize, sizeof(bmpInfoHdr.biSize));
+	os.write((char*)&bmpInfoHdr.biWidth, sizeof(bmpInfoHdr.biWidth));
+	os.write((char*)&bmpInfoHdr.biHeight, sizeof(bmpInfoHdr.biHeight));
+	os.write((char*)&bmpInfoHdr.biPlanes, sizeof(bmpInfoHdr.biPlanes));
+	os.write((char*)&bmpInfoHdr.biBitCount, sizeof(bmpInfoHdr.biBitCount));
+	os.write((char*)&bmpInfoHdr.biCompression, sizeof(bmpInfoHdr.biCompression));
+	os.write((char*)&bmpInfoHdr.biSizeImage, sizeof(bmpInfoHdr.biSizeImage));
+	os.write((char*)&bmpInfoHdr.biXPelsPerMeter, sizeof(bmpInfoHdr.biXPelsPerMeter));
+	os.write((char*)&bmpInfoHdr.biYPelsPerMeter, sizeof(bmpInfoHdr.biYPelsPerMeter));
+	os.write((char*)&bmpInfoHdr.biClrUsed, sizeof(bmpInfoHdr.biClrUsed));
+	os.write((char*)&bmpInfoHdr.biClrImportant, sizeof(bmpInfoHdr.biClrImportant));
 }
 
 bool BmpCoderInfoIO::IsValidBmp(const BmpFileHeader &fileHdr, const BmpInfoHeader &infoHdr)

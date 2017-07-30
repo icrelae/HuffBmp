@@ -23,12 +23,14 @@ public:
 	void ReadBmpInfoHeader(std::istream&);
 	static void ReadBmpFileHeader(std::istream&, BmpFileHeader&);
 	static void ReadBmpInfoHeader(std::istream&, BmpInfoHeader&);
+	static void WriteBmpFileHeader(std::ostream&, BmpFileHeader&);
+	static void WriteBmpInfoHeader(std::ostream&, BmpInfoHeader&);
 	BmpFileHeader bmpFileHdr;
 	BmpInfoHeader bmpInfoHdr;
 private:
 	size_t gcount;
 	BmpCoder *coderPtr;
-	std::bitset<8> mask;
+	char mask;
 
 	bool IsValidBmp(const BmpFileHeader&, const BmpInfoHeader&);
 };
