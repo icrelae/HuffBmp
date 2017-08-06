@@ -1,0 +1,75 @@
+#include "BmpCommon.h"
+
+void BmpFileHeader::ReadHeader(std::istream &is)
+{
+	is.read((char*)&bfType, sizeof(bfType));
+	is.read((char*)&bfSize, sizeof(bfSize));
+	is.read((char*)&bfReserved1, sizeof(bfReserved1));
+	is.read((char*)&bfReserved2, sizeof(bfReserved2));
+	is.read((char*)&bfOffBits, sizeof(bfOffBits));
+}
+
+void BmpFileHeader::WriteHeader(std::ostream &os)
+{
+	os.write((char*)&bfType, sizeof(bfType));
+	os.write((char*)&bfSize, sizeof(bfSize));
+	os.write((char*)&bfReserved1, sizeof(bfReserved1));
+	os.write((char*)&bfReserved2, sizeof(bfReserved2));
+	os.write((char*)&bfOffBits, sizeof(bfOffBits));
+}
+
+void BmpInfoHeader::ReadHeader(std::istream &is)
+{
+	is.read((char*)&biSize, sizeof(biSize));
+	is.read((char*)&biWidth, sizeof(biWidth));
+	is.read((char*)&biHeight, sizeof(biHeight));
+	is.read((char*)&biPlanes, sizeof(biPlanes));
+	is.read((char*)&biBitCount, sizeof(biBitCount));
+	is.read((char*)&biCompression, sizeof(biCompression));
+	is.read((char*)&biSizeImage, sizeof(biSizeImage));
+	is.read((char*)&biXPelsPerMeter, sizeof(biXPelsPerMeter));
+	is.read((char*)&biYPelsPerMeter, sizeof(biYPelsPerMeter));
+	is.read((char*)&biClrUsed, sizeof(biClrUsed));
+	is.read((char*)&biClrImportant, sizeof(biClrImportant));
+}
+
+void BmpInfoHeader::WriteHeader(std::ostream &os)
+{
+	os.write((char*)&biSize, sizeof(biSize));
+	os.write((char*)&biWidth, sizeof(biWidth));
+	os.write((char*)&biHeight, sizeof(biHeight));
+	os.write((char*)&biPlanes, sizeof(biPlanes));
+	os.write((char*)&biBitCount, sizeof(biBitCount));
+	os.write((char*)&biCompression, sizeof(biCompression));
+	os.write((char*)&biSizeImage, sizeof(biSizeImage));
+	os.write((char*)&biXPelsPerMeter, sizeof(biXPelsPerMeter));
+	os.write((char*)&biYPelsPerMeter, sizeof(biYPelsPerMeter));
+	os.write((char*)&biClrUsed, sizeof(biClrUsed));
+	os.write((char*)&biClrImportant, sizeof(biClrImportant));
+}
+
+std::ostream& operator<<(std::ostream &os, const BmpFileHeader &bfHdr)
+{
+	os << "bfType: " << bfHdr.bfType << std::endl;
+	os << "bfSize: " << bfHdr.bfSize << std::endl;
+	os << "bfReserved1: " << bfHdr.bfReserved1 << std::endl;
+	os << "bfReserved2: " << bfHdr.bfReserved2 << std::endl;
+	os << "bfOffBits: " << bfHdr.bfOffBits << std::endl;
+	return os;
+}
+
+std::ostream& operator<<(std::ostream &os, const BmpInfoHeader &biHdr)
+{
+	os << "biSize: " << biHdr.biSize << std::endl;
+	os << "biWidth: " << biHdr.biWidth << std::endl;
+	os << "biHeight: " << biHdr.biHeight << std::endl;
+	os << "biPlanes: " << biHdr.biPlanes << std::endl;
+	os << "biBitCount: " << biHdr.biBitCount << std::endl;
+	os << "biCompression: " << biHdr.biCompression << std::endl;
+	os << "biSizeImage: " << biHdr.biSizeImage << std::endl;
+	os << "biXPelsPerMeter: " << biHdr.biXPelsPerMeter << std::endl;
+	os << "biYPelsPerMeter: " << biHdr.biYPelsPerMeter << std::endl;
+	os << "biClrUsed: " << biHdr.biClrUsed << std::endl;
+	os << "biClrImportant: " << biHdr.biClrImportant << std::endl;
+	return os;
+}

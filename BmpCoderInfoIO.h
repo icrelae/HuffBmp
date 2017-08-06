@@ -21,10 +21,6 @@ public:
 
 	void ReadBmpFileHeader(std::istream&);
 	void ReadBmpInfoHeader(std::istream&);
-	static void ReadBmpFileHeader(std::istream&, BmpFileHeader&);
-	static void ReadBmpInfoHeader(std::istream&, BmpInfoHeader&);
-	static void WriteBmpFileHeader(std::ostream&, BmpFileHeader&);
-	static void WriteBmpInfoHeader(std::ostream&, BmpInfoHeader&);
 	BmpFileHeader bmpFileHdr;
 	BmpInfoHeader bmpInfoHdr;
 private:
