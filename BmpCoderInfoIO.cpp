@@ -1,5 +1,6 @@
 #include "BmpCoderInfoIO.h"
 
+//TODO: obsolete
 std::istream& BmpCoderInfoIO::ReadInfo(std::istream &is)
 {
 	char first3Byte[3];

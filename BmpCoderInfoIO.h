@@ -2,6 +2,7 @@
 #define _BMPCODERINFOIO_H
 // 2017.06.09 21:22
 
+//TODO: obsolete
 #include <bitset>
 #include "CoderInfoIO.h"
 #include "BmpCoder.h"

@@ -1,5 +1,10 @@
 #include "BmpCommon.h"
 
+BmpFileHeader::BmpFileHeader(): bfType(0x424d),
+	bfSize(0), bfReserved1(0), bfReserved2(0), bfOffBits(0)
+{
+}
+
 void BmpFileHeader::ReadHeader(std::istream &is)
 {
 	is.read((char*)&bfType, sizeof(bfType));
@@ -18,6 +23,12 @@ void BmpFileHeader::WriteHeader(std::ostream &os)
 	os.write((char*)&bfOffBits, sizeof(bfOffBits));
 }
 
+BmpInfoHeader::BmpInfoHeader():
+	biSize(0), biWidth(0), biHeight(0), biPlanes(0), biBitCount(0),
+	biCompression(0), biSizeImage(0), biXPelsPerMeter(0), biYPelsPerMeter(0),
+	biClrUsed(0), biClrImportant(0)
+{
+}
 void BmpInfoHeader::ReadHeader(std::istream &is)
 {
 	is.read((char*)&biSize, sizeof(biSize));

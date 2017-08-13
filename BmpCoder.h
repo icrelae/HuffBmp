@@ -2,6 +2,7 @@
 #define _BMPCODER_H
 // 2017.06.09 21:22
 
+//TODO: obsolete
 #include "Coder.h"
 #include "BmpCommon.h"
 

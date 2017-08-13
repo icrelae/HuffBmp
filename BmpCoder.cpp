@@ -1,6 +1,7 @@
 #include <ostream>
 #include "BmpCoder.h"
 
+//TODO: obsolete
 std::string BmpCoder::Encode(std::string &originCode) const
 {
 	std::string result = "";
