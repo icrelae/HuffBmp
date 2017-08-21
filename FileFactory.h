@@ -6,7 +6,7 @@
 
 class FileFactory {
 public:
-	virtual std::fstream GetFile(string, int) = 0;
+	virtual std::fstream GetFile(string fileName, int mode) = 0;
 };
 
 #endif // _FILEFACTORY_H

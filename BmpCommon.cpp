@@ -24,7 +24,7 @@ void BmpFileHeader::WriteHeader(std::ostream &os)
 }
 
 BmpInfoHeader::BmpInfoHeader():
-	biSize(0), biWidth(0), biHeight(0), biPlanes(0), biBitCount(0),
+	biSize(40), biWidth(0), biHeight(0), biPlanes(1), biBitCount(0),
 	biCompression(0), biSizeImage(0), biXPelsPerMeter(0), biYPelsPerMeter(0),
 	biClrUsed(0), biClrImportant(0)
 {
