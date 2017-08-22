@@ -1,40 +1,46 @@
-CXXFLAGS=-Wall -g
-OBJS= Main.o EncodeStrategy.o DecodeStrategy.o XorCoder.o XorCoderInfoIO.o \
-	  HuffmanCoder.o HuffmanCoderInfoIO.o BmpCommon.o BmpCoder.o BmpCoderInfoIO.o
-target="HuffBmp.out"
+CXXFLAGS += -Wall -g
+OBJSDIR = /tmp/HuffBmp
+OBJS = ${patsubst %.cpp, ${OBJSDIR}/%.o, ${wildcard *.cpp}}
+target = ${OBJSDIR}/HuffBmp.out
 
 ${target}: ${OBJS}
 	${CXX} ${CXXFLAGS} ${OBJS} -o ${@}
 
-HuffmanCoder.o: HuffmanCoder.cpp HuffmanCoder.h BinaryTree.h Coder.h
+${OBJSDIR}/Main.o: ${OBJSDIR}/%.o:%.cpp
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-HuffmanCoderInfoIO.o: HuffmanCoderInfoIO.cpp HuffmanCoderInfoIO.h CoderInfoIO.h HuffmanCoder.h
+${OBJSDIR}/HuffmanCoder.o: ${OBJSDIR}/%.o:%.cpp %.h BinaryTree.h Coder.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-XorCoder.o: XorCoder.cpp XorCoder.h Coder.h
+${OBJSDIR}/HuffmanCoderInfoIO.o: ${OBJSDIR}/%.o:%.cpp %.h CoderInfoIO.h HuffmanCoder.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-XorCoderInfoIO.o: XorCoderInfoIO.cpp XorCoderInfoIO.h CoderInfoIO.h XorCoder.h
+${OBJSDIR}/XorCoder.o: ${OBJSDIR}/%.o:%.cpp %.h Coder.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-BmpCommon.o: BmpCommon.cpp BmpCommon.h
+${OBJSDIR}/XorCoderInfoIO.o: ${OBJSDIR}/%.o:%.cpp %.h CoderInfoIO.h XorCoder.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-BmpCoder.o: BmpCoder.cpp BmpCoder.h Coder.h BmpCommon.h
+${OBJSDIR}/BmpCommon.o: ${OBJSDIR}/%.o:%.cpp %.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-BmpCoderInfoIO.o: BmpCoderInfoIO.cpp BmpCoderInfoIO.h CoderInfoIO.h BmpCoder.h
+${OBJSDIR}/BmpCoder.o: ${OBJSDIR}/%.o:%.cpp %.h Coder.h BmpCommon.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-EncodeStrategy.o: EncodeStrategy.cpp EncodeStrategy.h CoderInfoIO.h Coder.h
+${OBJSDIR}/BmpCoderInfoIO.o: ${OBJSDIR}/%.o:%.cpp %.h CoderInfoIO.h BmpCoder.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-DecodeStrategy.o: DecodeStrategy.cpp DecodeStrategy.h CoderInfoIO.h Coder.h
+${OBJSDIR}/EncodeStrategy.o: ${OBJSDIR}/%.o:%.cpp %.h CoderInfoIO.h Coder.h
+	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
+
+${OBJSDIR}/DecodeStrategy.o: ${OBJSDIR}/%.o:%.cpp %.h CoderInfoIO.h Coder.h
+	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
+
+${OBJSDIR}/BmpFactory.o: ${OBJSDIR}/%.o:%.cpp %.h FileFactory.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
 .PHONY: cleanall clean
 cleanall: clean
-	-rm ${target}
+	-${RM} ${target}
 clean:
-	-rm *.o
+	-${RM} ${OBJSDIR}/*.o
