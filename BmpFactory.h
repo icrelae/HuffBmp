@@ -7,11 +7,15 @@
 
 class BmpFactory: public FileFactory {
 public:
+	BmpFactory();
+	virtual bool GetFile(const std::string, const std::ios_base::openmode) override;
+	void SetBitPerPxl(const int);
+	void SetResolution(const int, const int);
+private:
 	BmpFileHeader bmpFileHdr;
 	BmpInfoHeader bmpInfoHdr;
 
-	BmpFactory();
-	virtual std::fstream GetFile(string, int) override;
+	void UpdateBmpHeader();
 };
 
 #endif // _BMPFACTORY_H

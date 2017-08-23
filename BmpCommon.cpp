@@ -24,8 +24,8 @@ void BmpFileHeader::WriteHeader(std::ostream &os)
 }
 
 BmpInfoHeader::BmpInfoHeader():
-	biSize(40), biWidth(0), biHeight(0), biPlanes(1), biBitCount(0),
-	biCompression(0), biSizeImage(0), biXPelsPerMeter(0), biYPelsPerMeter(0),
+	biSize(40), biWidth(0), biHeight(0), biPlanes(1), biBitPerPxl(0),
+	biCompression(0), biImageSize(0), biXPxlsPerMeter(0), biYPxlsPerMeter(0),
 	biClrUsed(0), biClrImportant(0)
 {
 }
@@ -35,11 +35,11 @@ void BmpInfoHeader::ReadHeader(std::istream &is)
 	is.read((char*)&biWidth, sizeof(biWidth));
 	is.read((char*)&biHeight, sizeof(biHeight));
 	is.read((char*)&biPlanes, sizeof(biPlanes));
-	is.read((char*)&biBitCount, sizeof(biBitCount));
+	is.read((char*)&biBitPerPxl, sizeof(biBitPerPxl));
 	is.read((char*)&biCompression, sizeof(biCompression));
-	is.read((char*)&biSizeImage, sizeof(biSizeImage));
-	is.read((char*)&biXPelsPerMeter, sizeof(biXPelsPerMeter));
-	is.read((char*)&biYPelsPerMeter, sizeof(biYPelsPerMeter));
+	is.read((char*)&biImageSize, sizeof(biImageSize));
+	is.read((char*)&biXPxlsPerMeter, sizeof(biXPxlsPerMeter));
+	is.read((char*)&biYPxlsPerMeter, sizeof(biYPxlsPerMeter));
 	is.read((char*)&biClrUsed, sizeof(biClrUsed));
 	is.read((char*)&biClrImportant, sizeof(biClrImportant));
 }
@@ -50,11 +50,11 @@ void BmpInfoHeader::WriteHeader(std::ostream &os)
 	os.write((char*)&biWidth, sizeof(biWidth));
 	os.write((char*)&biHeight, sizeof(biHeight));
 	os.write((char*)&biPlanes, sizeof(biPlanes));
-	os.write((char*)&biBitCount, sizeof(biBitCount));
+	os.write((char*)&biBitPerPxl, sizeof(biBitPerPxl));
 	os.write((char*)&biCompression, sizeof(biCompression));
-	os.write((char*)&biSizeImage, sizeof(biSizeImage));
-	os.write((char*)&biXPelsPerMeter, sizeof(biXPelsPerMeter));
-	os.write((char*)&biYPelsPerMeter, sizeof(biYPelsPerMeter));
+	os.write((char*)&biImageSize, sizeof(biImageSize));
+	os.write((char*)&biXPxlsPerMeter, sizeof(biXPxlsPerMeter));
+	os.write((char*)&biYPxlsPerMeter, sizeof(biYPxlsPerMeter));
 	os.write((char*)&biClrUsed, sizeof(biClrUsed));
 	os.write((char*)&biClrImportant, sizeof(biClrImportant));
 }
@@ -75,12 +75,20 @@ std::ostream& operator<<(std::ostream &os, const BmpInfoHeader &biHdr)
 	os << "biWidth: " << biHdr.biWidth << std::endl;
 	os << "biHeight: " << biHdr.biHeight << std::endl;
 	os << "biPlanes: " << biHdr.biPlanes << std::endl;
-	os << "biBitCount: " << biHdr.biBitCount << std::endl;
+	os << "biBitPerPxl: " << biHdr.biBitPerPxl << std::endl;
 	os << "biCompression: " << biHdr.biCompression << std::endl;
-	os << "biSizeImage: " << biHdr.biSizeImage << std::endl;
-	os << "biXPelsPerMeter: " << biHdr.biXPelsPerMeter << std::endl;
-	os << "biYPelsPerMeter: " << biHdr.biYPelsPerMeter << std::endl;
+	os << "biImageSize: " << biHdr.biImageSize << std::endl;
+	os << "biXPxlsPerMeter: " << biHdr.biXPxlsPerMeter << std::endl;
+	os << "biYPxlsPerMeter: " << biHdr.biYPxlsPerMeter << std::endl;
 	os << "biClrUsed: " << biHdr.biClrUsed << std::endl;
 	os << "biClrImportant: " << biHdr.biClrImportant << std::endl;
 	return os;
+}
+
+uint32_t BmpInfoHeader::GetBiImageSize()
+{
+	int lineBytes = (biWidth * biBitPerPxl/8 + 3) / 4 * 4;
+	if (biWidth && !lineBytes)
+		lineBytes = 4;
+	return (lineBytes * biHeight);
 }
