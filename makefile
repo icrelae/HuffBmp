@@ -39,6 +39,9 @@ ${OBJSDIR}/DecodeStrategy.o: ${OBJSDIR}/%.o:%.cpp %.h CoderInfoIO.h Coder.h
 ${OBJSDIR}/BmpFactory.o: ${OBJSDIR}/%.o:%.cpp %.h FileFactory.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
+${OBJSDIR}/Mandelbrot.o: ${OBJSDIR}/%.o:%.cpp %.h
+	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
+
 .PHONY: cleanall clean
 cleanall: clean
 	-${RM} ${target}

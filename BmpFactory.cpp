@@ -8,6 +8,7 @@ BmpFactory::BmpFactory()
 	bmpInfoHdr.biBitPerPxl = 24;
 	bmpInfoHdr.biXPxlsPerMeter = 0;
 	bmpInfoHdr.biYPxlsPerMeter = 0;
+	UpdateBmpHeader();
 }
 
 void BmpFactory::UpdateBmpHeader()
