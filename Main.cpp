@@ -8,7 +8,6 @@
 #include "DecodeStrategy.h"
 #include "HuffmanCoderInfoIO.h"
 #include "XorCoderInfoIO.h"
-#include "BmpCoderInfoIO.h"
 
 using namespace std;
 
@@ -33,10 +32,6 @@ void TestHuff()
 int main(int argc, char **argv)
 {
 	std::ifstream ifs(string(argv[1]), fstream::binary);
-	BmpCoderInfoIO bmpCoder;
-	bmpCoder.ReadBmpFileHeader(ifs);
-	bmpCoder.ReadBmpInfoHeader(ifs);
-	cout << bmpCoder.bmpFileHdr << bmpCoder.bmpInfoHdr;
 
 	return 0;
 }

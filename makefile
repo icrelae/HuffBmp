@@ -24,12 +24,6 @@ ${OBJSDIR}/XorCoderInfoIO.o: ${OBJSDIR}/%.o:%.cpp %.h CoderInfoIO.h XorCoder.h
 ${OBJSDIR}/BmpCommon.o: ${OBJSDIR}/%.o:%.cpp %.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-${OBJSDIR}/BmpCoder.o: ${OBJSDIR}/%.o:%.cpp %.h Coder.h BmpCommon.h
-	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
-
-${OBJSDIR}/BmpCoderInfoIO.o: ${OBJSDIR}/%.o:%.cpp %.h CoderInfoIO.h BmpCoder.h
-	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
-
 ${OBJSDIR}/EncodeStrategy.o: ${OBJSDIR}/%.o:%.cpp %.h CoderInfoIO.h Coder.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
