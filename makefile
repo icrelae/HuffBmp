@@ -1,10 +1,11 @@
 CXXFLAGS += -Wall -g
+LDDFLAGS += -lpthread
 OBJSDIR = /tmp/HuffBmp
 OBJS = ${patsubst %.cpp, ${OBJSDIR}/%.o, ${wildcard *.cpp}}
 target = ${OBJSDIR}/HuffBmp.out
 
 ${target}: ${OBJS}
-	${CXX} ${CXXFLAGS} ${OBJS} -o ${@}
+	${CXX} ${CXXFLAGS} ${LDDFLAGS} ${OBJS} -o ${@}
 
 ${OBJSDIR}/Main.o: ${OBJSDIR}/%.o:%.cpp
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
@@ -36,8 +37,10 @@ ${OBJSDIR}/BmpFactory.o: ${OBJSDIR}/%.o:%.cpp %.h FileFactory.h
 ${OBJSDIR}/Mandelbrot.o: ${OBJSDIR}/%.o:%.cpp %.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-.PHONY: cleanall clean
+.PHONY: cleanall clean dir
 cleanall: clean
 	-${RM} ${target}
 clean:
 	-${RM} ${OBJSDIR}/*.o
+dir:
+	mkdir -p ${OBJSDIR}

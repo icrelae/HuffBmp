@@ -11,11 +11,17 @@ private:
 	double centerX;
 	double centerY;
 	double zoomFactor;
-	unsigned iteration;
-	double GetMdbVal(double, double);
+	double radius;
+	size_t iteration;
+	const unsigned char threadNum = 4;
+	const unsigned blockSize = 1920 * 1080 / 4;
+
 	void GetMdbValMap(std::shared_ptr<double> mdbValMap,
-			const unsigned width, const unsigned height,
-			const unsigned hStart, const unsigned hEnd);
+			const size_t width, const size_t height);
+	static double GetMdbVal(double, double, double, size_t);
+	static void GetMdbValMapThread(const Mandelbrot&,
+			std::shared_ptr<double>, size_t width, size_t height,
+			size_t hStart, size_t hEnd);
 };
 
 #endif // _MANDELBROT_H
