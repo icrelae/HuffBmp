@@ -7,6 +7,8 @@
 class Mandelbrot {
 public:
 	Mandelbrot();
+	std::shared_ptr<double> GetMdbValMap(const size_t, const size_t);
+	size_t GetIteration();
 private:
 	double centerX;
 	double centerY;
@@ -16,8 +18,6 @@ private:
 	const unsigned char threadNum = 4;
 	const unsigned blockSize = 1920 * 1080 / 4;
 
-	void GetMdbValMap(std::shared_ptr<double> mdbValMap,
-			const size_t width, const size_t height);
 	static double GetMdbVal(double, double, double, size_t);
 	static void GetMdbValMapThread(const Mandelbrot&,
 			std::shared_ptr<double>, size_t width, size_t height,

@@ -1,26 +1,26 @@
 #include "BmpCommon.h"
 
-BmpFileHeader::BmpFileHeader(): bfType(0x424d),
+BmpFileHeader::BmpFileHeader(): bfType(0x4d42),
 	bfSize(0), bfReserved1(0), bfReserved2(0), bfOffBits(0)
 {
 }
 
 void BmpFileHeader::ReadHeader(std::istream &is)
 {
-	is.read((char*)&bfType, sizeof(bfType));
-	is.read((char*)&bfSize, sizeof(bfSize));
-	is.read((char*)&bfReserved1, sizeof(bfReserved1));
-	is.read((char*)&bfReserved2, sizeof(bfReserved2));
-	is.read((char*)&bfOffBits, sizeof(bfOffBits));
+	is.read(reinterpret_cast<char*>(&bfType), sizeof(bfType));
+	is.read(reinterpret_cast<char*>(&bfSize), sizeof(bfSize));
+	is.read(reinterpret_cast<char*>(&bfReserved1), sizeof(bfReserved1));
+	is.read(reinterpret_cast<char*>(&bfReserved2), sizeof(bfReserved2));
+	is.read(reinterpret_cast<char*>(&bfOffBits), sizeof(bfOffBits));
 }
 
 void BmpFileHeader::WriteHeader(std::ostream &os)
 {
-	os.write((char*)&bfType, sizeof(bfType));
-	os.write((char*)&bfSize, sizeof(bfSize));
-	os.write((char*)&bfReserved1, sizeof(bfReserved1));
-	os.write((char*)&bfReserved2, sizeof(bfReserved2));
-	os.write((char*)&bfOffBits, sizeof(bfOffBits));
+	os.write(reinterpret_cast<char*>(&bfType), sizeof(bfType));
+	os.write(reinterpret_cast<char*>(&bfSize), sizeof(bfSize));
+	os.write(reinterpret_cast<char*>(&bfReserved1), sizeof(bfReserved1));
+	os.write(reinterpret_cast<char*>(&bfReserved2), sizeof(bfReserved2));
+	os.write(reinterpret_cast<char*>(&bfOffBits), sizeof(bfOffBits));
 }
 
 BmpInfoHeader::BmpInfoHeader():
@@ -31,32 +31,32 @@ BmpInfoHeader::BmpInfoHeader():
 }
 void BmpInfoHeader::ReadHeader(std::istream &is)
 {
-	is.read((char*)&biSize, sizeof(biSize));
-	is.read((char*)&biWidth, sizeof(biWidth));
-	is.read((char*)&biHeight, sizeof(biHeight));
-	is.read((char*)&biPlanes, sizeof(biPlanes));
-	is.read((char*)&biBitPerPxl, sizeof(biBitPerPxl));
-	is.read((char*)&biCompression, sizeof(biCompression));
-	is.read((char*)&biImageSize, sizeof(biImageSize));
-	is.read((char*)&biXPxlsPerMeter, sizeof(biXPxlsPerMeter));
-	is.read((char*)&biYPxlsPerMeter, sizeof(biYPxlsPerMeter));
-	is.read((char*)&biClrUsed, sizeof(biClrUsed));
-	is.read((char*)&biClrImportant, sizeof(biClrImportant));
+	is.read(reinterpret_cast<char*>(&biSize), sizeof(biSize));
+	is.read(reinterpret_cast<char*>(&biWidth), sizeof(biWidth));
+	is.read(reinterpret_cast<char*>(&biHeight), sizeof(biHeight));
+	is.read(reinterpret_cast<char*>(&biPlanes), sizeof(biPlanes));
+	is.read(reinterpret_cast<char*>(&biBitPerPxl), sizeof(biBitPerPxl));
+	is.read(reinterpret_cast<char*>(&biCompression), sizeof(biCompression));
+	is.read(reinterpret_cast<char*>(&biImageSize), sizeof(biImageSize));
+	is.read(reinterpret_cast<char*>(&biXPxlsPerMeter), sizeof(biXPxlsPerMeter));
+	is.read(reinterpret_cast<char*>(&biYPxlsPerMeter), sizeof(biYPxlsPerMeter));
+	is.read(reinterpret_cast<char*>(&biClrUsed), sizeof(biClrUsed));
+	is.read(reinterpret_cast<char*>(&biClrImportant), sizeof(biClrImportant));
 }
 
 void BmpInfoHeader::WriteHeader(std::ostream &os)
 {
-	os.write((char*)&biSize, sizeof(biSize));
-	os.write((char*)&biWidth, sizeof(biWidth));
-	os.write((char*)&biHeight, sizeof(biHeight));
-	os.write((char*)&biPlanes, sizeof(biPlanes));
-	os.write((char*)&biBitPerPxl, sizeof(biBitPerPxl));
-	os.write((char*)&biCompression, sizeof(biCompression));
-	os.write((char*)&biImageSize, sizeof(biImageSize));
-	os.write((char*)&biXPxlsPerMeter, sizeof(biXPxlsPerMeter));
-	os.write((char*)&biYPxlsPerMeter, sizeof(biYPxlsPerMeter));
-	os.write((char*)&biClrUsed, sizeof(biClrUsed));
-	os.write((char*)&biClrImportant, sizeof(biClrImportant));
+	os.write(reinterpret_cast<char*>(&biSize), sizeof(biSize));
+	os.write(reinterpret_cast<char*>(&biWidth), sizeof(biWidth));
+	os.write(reinterpret_cast<char*>(&biHeight), sizeof(biHeight));
+	os.write(reinterpret_cast<char*>(&biPlanes), sizeof(biPlanes));
+	os.write(reinterpret_cast<char*>(&biBitPerPxl), sizeof(biBitPerPxl));
+	os.write(reinterpret_cast<char*>(&biCompression), sizeof(biCompression));
+	os.write(reinterpret_cast<char*>(&biImageSize), sizeof(biImageSize));
+	os.write(reinterpret_cast<char*>(&biXPxlsPerMeter), sizeof(biXPxlsPerMeter));
+	os.write(reinterpret_cast<char*>(&biYPxlsPerMeter), sizeof(biYPxlsPerMeter));
+	os.write(reinterpret_cast<char*>(&biClrUsed), sizeof(biClrUsed));
+	os.write(reinterpret_cast<char*>(&biClrImportant), sizeof(biClrImportant));
 }
 
 std::ostream& operator<<(std::ostream &os, const BmpFileHeader &bfHdr)

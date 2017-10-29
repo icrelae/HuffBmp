@@ -1,4 +1,4 @@
-CXXFLAGS += -Wall -g
+CXXFLAGS += -Wall -O2
 LDDFLAGS += -lpthread
 OBJSDIR = /tmp/HuffBmp
 OBJS = ${patsubst %.cpp, ${OBJSDIR}/%.o, ${wildcard *.cpp}}

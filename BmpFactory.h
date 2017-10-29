@@ -4,14 +4,16 @@
 
 #include "FileFactory.h"
 #include "BmpCommon.h"
+#include "Mandelbrot.h"
 
 class BmpFactory: public FileFactory {
 public:
 	BmpFactory();
 	virtual bool GetFile(const std::string, const std::ios_base::openmode) override;
-	void SetBitPerPxl(const int);
-	void SetResolution(const int, const int);
+	void SetBitPerPxl(const size_t);
+	void SetResolution(const size_t, const size_t);
 private:
+	Mandelbrot mandelbrot;
 	BmpFileHeader bmpFileHdr;
 	BmpInfoHeader bmpInfoHdr;
 
