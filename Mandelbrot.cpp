@@ -12,6 +12,16 @@ size_t Mandelbrot::GetIteration()
 	return iteration;
 }
 
+double Mandelbrot::GetZoomFactor()
+{
+	return zoomFactor;
+}
+
+void Mandelbrot::SetZoomFactor(double value)
+{
+	zoomFactor = value;
+}
+
 std::shared_ptr<double> Mandelbrot::GetMdbValMap(
 		const size_t width, const size_t height)
 {

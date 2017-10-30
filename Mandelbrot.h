@@ -9,6 +9,8 @@ public:
 	Mandelbrot();
 	std::shared_ptr<double> GetMdbValMap(const size_t, const size_t);
 	size_t GetIteration();
+	double GetZoomFactor();
+	void SetZoomFactor(double);
 private:
 	double centerX;
 	double centerY;

@@ -1,3 +1,5 @@
+#include <random>
+#include <ctime>
 #include "BmpFactory.h"
 
 namespace {
@@ -67,6 +69,10 @@ bool BmpFactory::GetFile(const std::string fileName, const std::ios_base::openmo
 	std::fstream bmpFile(fileName, mode);
 
 	// get mandelbrot value map
+	std::default_random_engine engine(time(0));
+	std::uniform_real_distribution<double>
+		dist(mandelbrot.GetZoomFactor(), mandelbrot.GetZoomFactor()+1);
+	mandelbrot.SetZoomFactor(dist(engine));
 	std::shared_ptr<double> mdbValMap =
 		mandelbrot.GetMdbValMap(bmpInfoHdr.biWidth, bmpInfoHdr.biHeight);
 	const double *mdbValMapPtr = mdbValMap.get();
