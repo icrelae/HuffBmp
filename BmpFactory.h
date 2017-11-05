@@ -9,7 +9,9 @@
 class BmpFactory: public FileFactory {
 public:
 	BmpFactory();
-	virtual bool GetFile(const std::string, const std::ios_base::openmode) override;
+	virtual size_t GetFile(std::shared_ptr<signed char[]>&) override;
+	virtual size_t GetFile(const std::string, const std::ios_base::openmode) override;
+	unsigned char GetBitPerPxl() const;
 	void SetBitPerPxl(const size_t);
 	void SetResolution(const size_t, const size_t);
 private:

@@ -35,7 +35,7 @@ int XorCoderInfoIO::SetMgcNmb(int i)
 	return mgcNmb;
 }
 
-int XorCoderInfoIO::GetMgcNmb()
+int XorCoderInfoIO::GetMgcNmb() const
 {
 	return mgcNmb;
 }

@@ -16,7 +16,7 @@ public:
 	virtual size_t Gcount() const override;
 	virtual const Coder* GetCoder() const override;
 	int SetMgcNmb(int);
-	int GetMgcNmb();
+	int GetMgcNmb() const;
 private:
 	int mgcNmb;
 	size_t gcount;

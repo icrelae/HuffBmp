@@ -7,12 +7,12 @@ Mandelbrot::Mandelbrot():
 {
 }
 
-size_t Mandelbrot::GetIteration()
+size_t Mandelbrot::GetIteration() const
 {
 	return iteration;
 }
 
-double Mandelbrot::GetZoomFactor()
+double Mandelbrot::GetZoomFactor() const
 {
 	return zoomFactor;
 }

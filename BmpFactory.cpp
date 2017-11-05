@@ -1,5 +1,6 @@
 #include <random>
 #include <ctime>
+#include <cstring>
 #include "BmpFactory.h"
 
 namespace {
@@ -64,10 +65,8 @@ void BmpFactory::UpdateBmpHeader()
 	bmpFileHdr.bfSize = bmpFileHdr.bfOffBits + bmpInfoHdr.biImageSize;
 }
 
-bool BmpFactory::GetFile(const std::string fileName, const std::ios_base::openmode mode)
+size_t BmpFactory::GetFile(std::shared_ptr<signed char[]> &fileSptr)
 {
-	std::fstream bmpFile(fileName, mode);
-
 	// get mandelbrot value map
 	std::default_random_engine engine(time(0));
 	std::uniform_real_distribution<double>
@@ -81,7 +80,7 @@ bool BmpFactory::GetFile(const std::string fileName, const std::ios_base::openmo
 	 * histogram is using to statistic the ratio of diffrent value in mdbValMap
 	 * the value in mdbValMap won't greater than 'iteration-1' */
 	const size_t interation = mandelbrot.GetIteration();
-	const size_t resolution = bmpInfoHdr.biWidth * bmpInfoHdr.biHeight;
+	const size_t resolution = bmpInfoHdr.biImageSize / (bmpInfoHdr.biBitPerPxl/8);
 	std::unique_ptr<double[]> histogram(new double[interation+1]{0});
 	for (size_t i = 0; i < resolution; ++i)
 		++histogram[static_cast<size_t>(mdbValMapPtr[i])];
@@ -92,7 +91,10 @@ bool BmpFactory::GetFile(const std::string fileName, const std::ios_base::openmo
 		histogram[i] = histogram[i-1] + histogram[i] / resolution;
 
 	// convert mandelbrot value to RGB according to histogram
-	std::unique_ptr<unsigned char[]> image(new unsigned char[resolution * 3]{0});
+	std::shared_ptr<unsigned char> sptrImage(
+			new unsigned char[bmpInfoHdr.biImageSize]{0},
+			std::default_delete<unsigned char[]>());
+	unsigned char *image = sptrImage.get();
 	for (size_t i = 0; i < resolution; ++i) {
 		const size_t mdbValue = static_cast<size_t>(mdbValMapPtr[i]);
 		double colorCode = histogram[mdbValue];
@@ -102,11 +104,27 @@ bool BmpFactory::GetFile(const std::string fileName, const std::ios_base::openmo
 		GetRGB(colorCode, image[i*3+2], image[i*3+1], image[i*3]);
 	}
 
-	bmpFileHdr.WriteHeader(bmpFile);
-	bmpInfoHdr.WriteHeader(bmpFile);
-	bmpFile.write(reinterpret_cast<char*>(image.get()), resolution*3);
+	// write file content into fileSptr
+	fileSptr.reset(new signed char[bmpFileHdr.bfSize], std::default_delete<signed char[]>());
+	bmpFileHdr.WriteHeader(fileSptr.get());
+	bmpInfoHdr.WriteHeader(fileSptr.get() + 14);
+	memcpy(fileSptr.get() + bmpFileHdr.bfOffBits, image, bmpInfoHdr.biImageSize);
 
-	return true;
+	return bmpFileHdr.bfSize;
+}
+
+size_t BmpFactory::GetFile(const std::string fileName, const std::ios_base::openmode mode)
+{
+	std::fstream bmpFile(fileName, mode);
+	std::shared_ptr<signed char[]> image;
+	size_t fileSize = GetFile(image);
+	bmpFile.write(reinterpret_cast<char*>(image.get()), fileSize);
+	return fileSize;
+}
+
+unsigned char BmpFactory::GetBitPerPxl() const
+{
+	return bmpInfoHdr.biBitPerPxl;
 }
 
 void BmpFactory::SetBitPerPxl(const size_t bits)

@@ -1,3 +1,4 @@
+#include <cstring>
 #include "BmpCommon.h"
 
 BmpFileHeader::BmpFileHeader(): bfType(0x4d42),
@@ -21,6 +22,20 @@ void BmpFileHeader::WriteHeader(std::ostream &os)
 	os.write(reinterpret_cast<char*>(&bfReserved1), sizeof(bfReserved1));
 	os.write(reinterpret_cast<char*>(&bfReserved2), sizeof(bfReserved2));
 	os.write(reinterpret_cast<char*>(&bfOffBits), sizeof(bfOffBits));
+}
+
+void BmpFileHeader::WriteHeader(signed char *ptr)
+{
+	memcpy(ptr, &bfType, sizeof(bfType));
+	ptr += sizeof(bfType);
+	memcpy(ptr, &bfSize, sizeof(bfSize));
+	ptr += sizeof(bfSize);
+	memcpy(ptr, &bfReserved1, sizeof(bfReserved1));
+	ptr += sizeof(bfReserved1);
+	memcpy(ptr, &bfReserved2, sizeof(bfReserved2));
+	ptr += sizeof(bfReserved2);
+	memcpy(ptr, &bfOffBits, sizeof(bfOffBits));
+	ptr += sizeof(bfOffBits);
 }
 
 BmpInfoHeader::BmpInfoHeader():
@@ -57,6 +72,32 @@ void BmpInfoHeader::WriteHeader(std::ostream &os)
 	os.write(reinterpret_cast<char*>(&biYPxlsPerMeter), sizeof(biYPxlsPerMeter));
 	os.write(reinterpret_cast<char*>(&biClrUsed), sizeof(biClrUsed));
 	os.write(reinterpret_cast<char*>(&biClrImportant), sizeof(biClrImportant));
+}
+
+void BmpInfoHeader::WriteHeader(signed char *ptr)
+{
+	memcpy(ptr, &biSize, sizeof(biSize));
+	ptr += sizeof(biSize);
+	memcpy(ptr, &biWidth, sizeof(biWidth));
+	ptr += sizeof(biWidth);
+	memcpy(ptr, &biHeight, sizeof(biHeight));
+	ptr += sizeof(biHeight);
+	memcpy(ptr, &biPlanes, sizeof(biPlanes));
+	ptr += sizeof(biPlanes);
+	memcpy(ptr, &biBitPerPxl, sizeof(biBitPerPxl));
+	ptr += sizeof(biBitPerPxl);
+	memcpy(ptr, &biCompression, sizeof(biCompression));
+	ptr += sizeof(biCompression);
+	memcpy(ptr, &biImageSize, sizeof(biImageSize));
+	ptr += sizeof(biImageSize);
+	memcpy(ptr, &biXPxlsPerMeter, sizeof(biXPxlsPerMeter));
+	ptr += sizeof(biXPxlsPerMeter);
+	memcpy(ptr, &biYPxlsPerMeter, sizeof(biYPxlsPerMeter));
+	ptr += sizeof(biYPxlsPerMeter);
+	memcpy(ptr, &biClrUsed, sizeof(biClrUsed));
+	ptr += sizeof(biClrUsed);
+	memcpy(ptr, &biClrImportant, sizeof(biClrImportant));
+	ptr += sizeof(biClrImportant);
 }
 
 std::ostream& operator<<(std::ostream &os, const BmpFileHeader &bfHdr)
