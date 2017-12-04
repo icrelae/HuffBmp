@@ -37,6 +37,12 @@ ${OBJSDIR}/BmpFactory.o: ${OBJSDIR}/%.o:%.cpp %.h FileFactory.h
 ${OBJSDIR}/Mandelbrot.o: ${OBJSDIR}/%.o:%.cpp %.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
+${OBJSDIR}/BmpCoder.o: ${OBJSDIR}/%.o:%.cpp %.h
+	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
+
+${OBJSDIR}/Common.o: ${OBJSDIR}/%.o:%.cpp %.h
+	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
+
 .PHONY: cleanall clean dir
 cleanall: clean
 	-${RM} ${target}

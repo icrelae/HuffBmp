@@ -15,6 +15,20 @@ void BmpFileHeader::ReadHeader(std::istream &is)
 	is.read(reinterpret_cast<char*>(&bfOffBits), sizeof(bfOffBits));
 }
 
+void BmpFileHeader::ReadHeader(const char *ptr)
+{
+	memcpy(&bfType, ptr, sizeof(bfType));
+	ptr += sizeof(bfType);
+	memcpy(&bfSize, ptr, sizeof(bfSize));
+	ptr += sizeof(bfSize);
+	memcpy(&bfReserved1, ptr, sizeof(bfReserved1));
+	ptr += sizeof(bfReserved1);
+	memcpy(&bfReserved2, ptr, sizeof(bfReserved2));
+	ptr += sizeof(bfReserved2);
+	memcpy(&bfOffBits, ptr, sizeof(bfOffBits));
+	ptr += sizeof(bfOffBits);
+}
+
 void BmpFileHeader::WriteHeader(std::ostream &os)
 {
 	os.write(reinterpret_cast<char*>(&bfType), sizeof(bfType));
@@ -24,7 +38,7 @@ void BmpFileHeader::WriteHeader(std::ostream &os)
 	os.write(reinterpret_cast<char*>(&bfOffBits), sizeof(bfOffBits));
 }
 
-void BmpFileHeader::WriteHeader(signed char *ptr)
+void BmpFileHeader::WriteHeader(char *ptr)
 {
 	memcpy(ptr, &bfType, sizeof(bfType));
 	ptr += sizeof(bfType);
@@ -59,6 +73,32 @@ void BmpInfoHeader::ReadHeader(std::istream &is)
 	is.read(reinterpret_cast<char*>(&biClrImportant), sizeof(biClrImportant));
 }
 
+void BmpInfoHeader::ReadHeader(const char *ptr)
+{
+	memcpy(&biSize, ptr, sizeof(biSize));
+	ptr += sizeof(biSize);
+	memcpy(&biWidth, ptr, sizeof(biWidth));
+	ptr += sizeof(biWidth);
+	memcpy(&biHeight, ptr, sizeof(biHeight));
+	ptr += sizeof(biHeight);
+	memcpy(&biPlanes, ptr, sizeof(biPlanes));
+	ptr += sizeof(biPlanes);
+	memcpy(&biBitPerPxl, ptr, sizeof(biBitPerPxl));
+	ptr += sizeof(biBitPerPxl);
+	memcpy(&biCompression, ptr, sizeof(biCompression));
+	ptr += sizeof(biCompression);
+	memcpy(&biImageSize, ptr, sizeof(biImageSize));
+	ptr += sizeof(biImageSize);
+	memcpy(&biXPxlsPerMeter, ptr, sizeof(biXPxlsPerMeter));
+	ptr += sizeof(biXPxlsPerMeter);
+	memcpy(&biYPxlsPerMeter, ptr, sizeof(biYPxlsPerMeter));
+	ptr += sizeof(biYPxlsPerMeter);
+	memcpy(&biClrUsed, ptr, sizeof(biClrUsed));
+	ptr += sizeof(biClrUsed);
+	memcpy(&biClrImportant, ptr, sizeof(biClrImportant));
+	ptr += sizeof(biClrImportant);
+}
+
 void BmpInfoHeader::WriteHeader(std::ostream &os)
 {
 	os.write(reinterpret_cast<char*>(&biSize), sizeof(biSize));
@@ -74,7 +114,7 @@ void BmpInfoHeader::WriteHeader(std::ostream &os)
 	os.write(reinterpret_cast<char*>(&biClrImportant), sizeof(biClrImportant));
 }
 
-void BmpInfoHeader::WriteHeader(signed char *ptr)
+void BmpInfoHeader::WriteHeader(char *ptr)
 {
 	memcpy(ptr, &biSize, sizeof(biSize));
 	ptr += sizeof(biSize);

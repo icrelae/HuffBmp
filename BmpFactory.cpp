@@ -2,6 +2,7 @@
 #include <ctime>
 #include <cstring>
 #include "BmpFactory.h"
+#include "Mandelbrot.h"
 
 namespace {
 	/* static function */
@@ -65,9 +66,10 @@ void BmpFactory::UpdateBmpHeader()
 	bmpFileHdr.bfSize = bmpFileHdr.bfOffBits + bmpInfoHdr.biImageSize;
 }
 
-size_t BmpFactory::GetFile(std::shared_ptr<signed char[]> &fileSptr)
+size_t BmpFactory::GetFile(std::shared_ptr<char[]> &fileSptr)
 {
 	// get mandelbrot value map
+	Mandelbrot mandelbrot;
 	std::default_random_engine engine(time(0));
 	std::uniform_real_distribution<double>
 		dist(mandelbrot.GetZoomFactor(), mandelbrot.GetZoomFactor()+1);
@@ -105,7 +107,7 @@ size_t BmpFactory::GetFile(std::shared_ptr<signed char[]> &fileSptr)
 	}
 
 	// write file content into fileSptr
-	fileSptr.reset(new signed char[bmpFileHdr.bfSize], std::default_delete<signed char[]>());
+	fileSptr.reset(new char[bmpFileHdr.bfSize], std::default_delete<char[]>());
 	bmpFileHdr.WriteHeader(fileSptr.get());
 	bmpInfoHdr.WriteHeader(fileSptr.get() + 14);
 	memcpy(fileSptr.get() + bmpFileHdr.bfOffBits, image, bmpInfoHdr.biImageSize);
@@ -113,18 +115,26 @@ size_t BmpFactory::GetFile(std::shared_ptr<signed char[]> &fileSptr)
 	return bmpFileHdr.bfSize;
 }
 
-size_t BmpFactory::GetFile(const std::string fileName, const std::ios_base::openmode mode)
+size_t BmpFactory::GetFile(const std::string fileName)
 {
-	std::fstream bmpFile(fileName, mode);
-	std::shared_ptr<signed char[]> image;
-	size_t fileSize = GetFile(image);
-	bmpFile.write(reinterpret_cast<char*>(image.get()), fileSize);
+	std::fstream bmpFile(fileName, std::ios::out | std::ios::binary);
+	size_t fileSize = 0;
+	if (bmpFile.good()) {
+		std::shared_ptr<char[]> image;
+		fileSize = GetFile(image);
+		bmpFile.write(reinterpret_cast<char*>(image.get()), fileSize);
+	}
 	return fileSize;
 }
 
 unsigned char BmpFactory::GetBitPerPxl() const
 {
 	return bmpInfoHdr.biBitPerPxl;
+}
+
+unsigned char BmpFactory::GetOffBits() const
+{
+	return bmpFileHdr.bfOffBits;
 }
 
 void BmpFactory::SetBitPerPxl(const size_t bits)

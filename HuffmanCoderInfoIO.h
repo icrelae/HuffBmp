@@ -45,7 +45,6 @@ private:
 	bool SetLeafNodeData(const std::vector<HuffmanCoder::Pair_CU>&);
 	bool CheckTreeStruct(const std::string&) const;
 	std::istream& StatisticKeyWeight(std::istream&);
-	static size_t CalcFileSize(std::istream &is);
 };
 
 #endif // _HUFFMANCODERINFOIO_H

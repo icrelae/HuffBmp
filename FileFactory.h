@@ -7,8 +7,10 @@
 
 class FileFactory {
 public:
-	virtual size_t GetFile(std::shared_ptr<signed char[]>&) = 0;
-	virtual size_t GetFile(const std::string fileName, const std::ios_base::openmode mode) = 0;
+	virtual size_t GetFile(std::shared_ptr<char[]>&) = 0;
+	//virtual size_t GetFile(const std::string fileName,
+	//	const std::ios_base::openmode mode) = 0;
+	virtual size_t GetFile(const std::string fileName) = 0;
 };
 
 #endif // _FILEFACTORY_H

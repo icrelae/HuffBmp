@@ -49,7 +49,7 @@ void TestBmpFactory()
 {
 	std::string bmpFileName("/tmp/tmp.bmp");
 	BmpFactory bmp;
-	bmp.GetFile(bmpFileName, ios::out | ios::binary);
+	bmp.GetFile(bmpFileName);
 }
 
 int main(int argc, char **argv)

@@ -14,8 +14,9 @@ struct BmpFileHeader {
 
 	BmpFileHeader();
 	void ReadHeader(std::istream&);
+	void ReadHeader(const char*);
 	void WriteHeader(std::ostream&);
-	void WriteHeader(signed char*);
+	void WriteHeader(char*);
 };
 
 struct BmpInfoHeader {
@@ -40,8 +41,9 @@ struct BmpInfoHeader {
 
 	BmpInfoHeader();
 	void ReadHeader(std::istream&);
+	void ReadHeader(const char*);
 	void WriteHeader(std::ostream&);
-	void WriteHeader(signed char*);
+	void WriteHeader(char*);
 	uint32_t GetBiImageSize();
 };
 

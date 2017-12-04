@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <fstream>
 #include "HuffmanCoderInfoIO.h"
+#include "Common.h"
 
 // static member need not only declaration with 'static' but also a definition
 // without 'static'
@@ -277,13 +278,4 @@ size_t HuffmanCoderInfoIO::GetFileSize() const
 const Coder* HuffmanCoderInfoIO::GetCoder() const
 {
 	return coderPtr;
-}
-
-size_t HuffmanCoderInfoIO::CalcFileSize(std::istream &is)
-{
-	std::streampos pos = is.tellg();
-	is.seekg(0, std::fstream::end);
-	size_t fileSize = is.tellg();
-	is.seekg(pos);
-	return fileSize;
 }
