@@ -13,6 +13,7 @@ public:
 	virtual size_t GetFile(const std::string) override;
 	unsigned char GetBitPerPxl() const;
 	unsigned char GetOffBits() const;
+	unsigned char GetSize() const;
 	void SetBitPerPxl(const size_t);
 	void SetResolution(const size_t, const size_t);
 private:

@@ -9,6 +9,7 @@
 #include "HuffmanCoderInfoIO.h"
 #include "XorCoderInfoIO.h"
 #include "BmpFactory.h"
+#include "BmpCoder.h"
 
 using namespace std;
 
@@ -50,6 +51,18 @@ void TestBmpFactory()
 	std::string bmpFileName("/tmp/tmp.bmp");
 	BmpFactory bmp;
 	bmp.GetFile(bmpFileName);
+}
+
+void TestBmpCoder()
+{
+	BmpCoder bmpCoder;
+	std::string fileForEncode = "/tmp/tmp";
+	std::string fileForDecode = fileForEncode + ".plain";
+	std::shared_ptr<char[]> bmpSptr;
+	std::ifstream ifs(fileForEncode, std::ios::binary);
+	std::ofstream ofs(fileForDecode, std::ios::binary);
+	bmpCoder.Encode(ifs, bmpSptr);
+	bmpCoder.Decode(bmpSptr, ofs);
 }
 
 int main(int argc, char **argv)

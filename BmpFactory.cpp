@@ -137,6 +137,11 @@ unsigned char BmpFactory::GetOffBits() const
 	return bmpFileHdr.bfOffBits;
 }
 
+unsigned char BmpFactory::GetSize() const
+{
+	return bmpFileHdr.bfSize;
+}
+
 void BmpFactory::SetBitPerPxl(const size_t bits)
 {
 	bmpInfoHdr.biBitPerPxl = bits;
