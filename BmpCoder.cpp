@@ -34,9 +34,10 @@ int BmpCoder::Decode(std::shared_ptr<const char[]> bmpFile, std::ofstream &ofs)
 	bmpFilePtr += 14;
 	infoHdr.ReadHeader(bmpFilePtr);
 	bmpFilePtr += 40;
-	if (IsValidBmp(fileHdr, infoHdr)) {
+	if (IsValidBmp(fileHdr, infoHdr))
 		result = GetPlain(bmpFilePtr, infoHdr.biImageSize, ofs);
-	}
+	else
+		throw std::runtime_error("cannot decode this bmp file");
 	return result;
 }
 
@@ -73,9 +74,9 @@ int BmpCoder::GetPlain(const char *imageBeg, size_t imageSize, std::ofstream &of
 	return 0;
 }
 
-int BmpCoder::Encode(std::ifstream &ifs, std::shared_ptr<char[]> &bmpFile)
+unsigned BmpCoder::Encode(std::ifstream &ifs, std::shared_ptr<char[]> &bmpFile)
 {
-	int result = -1;
+	unsigned result = 0;
 	ifs.seekg(0, std::fstream::beg);
 	size_t fileSize = CalcFileSize(ifs);
 	std::bitset<8> bitSetOfMask(mask);
@@ -90,12 +91,13 @@ int BmpCoder::Encode(std::ifstream &ifs, std::shared_ptr<char[]> &bmpFile)
 		}
 	}
 	BmpFactory bmpFactory;
-	bmpFactory.SetBitPerPxl(24);
+	bmpFactory.SetBiBitPerPxl(24);
+	bmpFactory.SetBfReserved1(0x4248);	// "HB"
 	bmpFactory.SetResolution(width, height);
 	bmpFactory.GetFile(bmpFile);
 	if (0 == GetCipher(ifs, fileSize, bmpFile.get() +
-				bmpFactory.GetOffBits(), width * height))
-		result = bmpFactory.GetSize();
+				bmpFactory.GetBfOffBits(), width * height))
+		result = bmpFactory.GetBfSize();
 	return result;
 }
 

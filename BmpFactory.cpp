@@ -50,7 +50,6 @@ namespace {
 
 BmpFactory::BmpFactory()
 {
-	bmpFileHdr.bfReserved1 = 0x4248;	// HB
 	bmpFileHdr.bfOffBits = 54;
 	bmpInfoHdr.biWidth = 1920;
 	bmpInfoHdr.biHeight = 1080;
@@ -127,22 +126,22 @@ size_t BmpFactory::GetFile(const std::string fileName)
 	return fileSize;
 }
 
-unsigned char BmpFactory::GetBitPerPxl() const
+unsigned char BmpFactory::GetBiBitPerPxl() const
 {
 	return bmpInfoHdr.biBitPerPxl;
 }
 
-unsigned char BmpFactory::GetOffBits() const
+unsigned BmpFactory::GetBfOffBits() const
 {
 	return bmpFileHdr.bfOffBits;
 }
 
-unsigned char BmpFactory::GetSize() const
+unsigned BmpFactory::GetBfSize() const
 {
 	return bmpFileHdr.bfSize;
 }
 
-void BmpFactory::SetBitPerPxl(const size_t bits)
+void BmpFactory::SetBiBitPerPxl(const size_t bits)
 {
 	bmpInfoHdr.biBitPerPxl = bits;
 	UpdateBmpHeader();
@@ -153,4 +152,9 @@ void BmpFactory::SetResolution(const size_t width, const size_t height)
 	bmpInfoHdr.biWidth = width;
 	bmpInfoHdr.biHeight = height;
 	UpdateBmpHeader();
+}
+
+void BmpFactory::SetBfReserved1(const size_t val)
+{
+	bmpFileHdr.bfReserved1 = val;
 }
