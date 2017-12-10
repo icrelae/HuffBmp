@@ -17,8 +17,12 @@ HuffmanCoderInfoIO::HuffmanCoderInfoIO(const HuffmanCoderInfoIO &coderInfo)
 	treeStruct(coderInfo.treeStruct), leafNodesData(coderInfo.leafNodesData),
 	keyWeight(coderInfo.keyWeight)
 {
-	coderPtr = alctHuffmanCoder.allocate(1);
-	alctHuffmanCoder.construct(coderPtr, *coderInfo.coderPtr);
+	if (coderInfo.coderPtr) {
+		coderPtr = alctHuffmanCoder.allocate(1);
+		alctHuffmanCoder.construct(coderPtr, *coderInfo.coderPtr);
+	} else {
+		coderPtr = nullptr;
+	}
 }
 
 HuffmanCoderInfoIO::HuffmanCoderInfoIO(HuffmanCoderInfoIO &&coderInfo)
@@ -55,11 +59,14 @@ HuffmanCoderInfoIO& HuffmanCoderInfoIO::operator=(const HuffmanCoderInfoIO &code
 	treeStruct = coderInfo.treeStruct;
 	leafNodesData = coderInfo.leafNodesData;
 	keyWeight = coderInfo.keyWeight;
-	if (coderPtr)
+	if (coderPtr) {
 		alctHuffmanCoder.destroy(coderPtr);
-	else
+		coderPtr = nullptr;
+	}
+	if (coderInfo.coderPtr) {
 		alctHuffmanCoder.allocate(1);
-	alctHuffmanCoder.construct(coderPtr, *coderInfo.coderPtr);
+		alctHuffmanCoder.construct(coderPtr, *coderInfo.coderPtr);
+	}
 	return *this;
 }
 
