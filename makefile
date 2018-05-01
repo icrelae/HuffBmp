@@ -4,8 +4,11 @@ OBJSDIR = /tmp/HuffBmp
 OBJS = ${patsubst %.cpp, ${OBJSDIR}/%.o, ${wildcard *.cpp}}
 target = ${OBJSDIR}/HuffBmp.out
 
-${target}: ${OBJS}
+${target}: ${OBJSDIR} ${OBJS}
 	${CXX} ${CXXFLAGS} ${LDDFLAGS} ${OBJS} -o ${@}
+
+${OBJSDIR}:
+	mkdir -p ${OBJSDIR}
 
 ${OBJSDIR}/Main.o: ${OBJSDIR}/%.o:%.cpp
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
@@ -43,10 +46,8 @@ ${OBJSDIR}/BmpCoder.o: ${OBJSDIR}/%.o:%.cpp %.h
 ${OBJSDIR}/Common.o: ${OBJSDIR}/%.o:%.cpp %.h
 	${CXX} ${CXXFLAGS} -c ${<} -o ${@}
 
-.PHONY: cleanall clean dir
+.PHONY: cleanall clean
 cleanall: clean
 	-${RM} ${target}
 clean:
 	-${RM} ${OBJSDIR}/*.o
-dir:
-	mkdir -p ${OBJSDIR}
