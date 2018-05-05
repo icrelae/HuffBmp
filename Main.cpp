@@ -10,23 +10,9 @@
 #include "XorCoderInfoIO.h"
 #include "BmpFactory.h"
 #include "BmpCoder.h"
+#include "Common.h"
 
 using namespace std;
-
-void ShowBmpInfo(std::string bmpFileName)
-{
-	BmpFileHeader bmpFileHdr;
-	BmpInfoHeader bmpInfoHdr;
-	std::fstream bmpFile(bmpFileName, ios::in | ios::binary);
-	if (bmpFile.good()) {
-		bmpFileHdr.ReadHeader(bmpFile);
-		bmpInfoHdr.ReadHeader(bmpFile);
-		cout << bmpFileHdr << bmpInfoHdr;
-	} else {
-		string errorMsg = "open " + bmpFileName + " failed!";
-		cout << errorMsg << endl;
-	}
-}
 
 void TestXor()
 {
@@ -65,10 +51,52 @@ void TestBmpCoder()
 	bmpCoder.Decode(bmpSptr, ofs);
 }
 
+void ShowHelp(std::ostream &os)
+{
+	os << "show bmp file header and info header" << endl;
+}
+
+void ShowBmpInfo(std::ostream &os, const BmpFileHeader &bmpFileHdr, const
+		BmpInfoHeader &bmpInfoHdr)
+{
+	os << bmpFileHdr << bmpInfoHdr;
+}
+
+bool ReadBmpInfo(std::string bmpFileName, size_t &length,
+	BmpFileHeader &bmpFileHdr, BmpInfoHeader &bmpInfoHdr)
+{
+	std::fstream bmpFile(bmpFileName, ios::in | ios::binary);
+	if (!bmpFile.good())
+		return false;
+	length = CalcFileSize(bmpFile);
+	bmpFileHdr.ReadHeader(bmpFile);
+	bmpInfoHdr.ReadHeader(bmpFile);
+	return true;
+}
+
 int main(int argc, char **argv)
 {
-	if (argc > 1)
-		ShowBmpInfo(argv[1]);
+	if (argc < 2)
+		return 1;
+
+	size_t length;
+	BmpFileHeader bmpFileHdr;
+	BmpInfoHeader bmpInfoHdr;
+	std::string argv1(argv[1]);
+	if (!ReadBmpInfo(argv1, length, bmpFileHdr, bmpInfoHdr)) {
+		string errorMsg = "open " + argv1 + " failed!";
+		cout << errorMsg << endl;
+		return 1;
+	}
+
+	switch (argc) {
+	case 2:
+		ShowBmpInfo(cout, bmpFileHdr, bmpInfoHdr);
+		break;
+	default:
+		ShowHelp(cout);
+		break;
+	}
 
 	return 0;
 }
