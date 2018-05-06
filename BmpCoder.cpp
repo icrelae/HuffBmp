@@ -56,10 +56,11 @@ int BmpCoder::GetPlain(const char *imageBeg, size_t imageSize, std::ofstream &of
 			// here suppose all data bits stored from lowest bit sequentialy
 			for (size_t j = 0; j < bitSet.count(); ++j) {
 				if (*colorPtr >> j & 0x1)
-					*buffPtr |= 0x1 << (bitCounter % 8);
+					*buffPtr |= 0x1 << bitCounter;
 				else
-					*buffPtr &= ~(0x1 << (bitCounter % 8));
-				if (++bitCounter % 8 == 0) {
+					*buffPtr &= ~(0x1 << bitCounter);
+				if (++bitCounter == 8) {
+					bitCounter = 0;
 					size_t offset = ++buffPtr - buffer.get();
 					if (outputCounter + offset == plainFileSize ||
 							offset == BUFFSIZE) {
@@ -116,13 +117,14 @@ int BmpCoder::GetCipher(std::ifstream &ifs, size_t fileSize, char *imageBeg, siz
 		for (; colorPtr < imageEnd && outputCounter < plainFileSize; colorPtr += 3) {
 			// here suppose all data bits stored from lowest bit sequentialy
 			for (size_t j = 0; j < bitSet.count(); ++j) {
-				if (*buffPtr >> (bitCounter % 8) & 0x1)
+				if (*buffPtr >> bitCounter & 0x1)
 					*colorPtr |= 0x1 << j;
 				else
 					*colorPtr &= ~(0x1 << j);
-				if (++bitCounter % 8 == 0) {
+				if (++bitCounter == 8) {
 					++buffPtr;
 					++outputCounter;
+					bitCounter = 0;
 				}
 			}
 		}
