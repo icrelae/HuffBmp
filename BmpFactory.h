@@ -12,6 +12,7 @@ public:
 	//virtual size_t GetFile(const std::string, const std::ios_base::openmode) override;
 	virtual size_t GetFile(const std::string) override;
 	unsigned char GetBiBitPerPxl() const;
+	unsigned GetBiImageSize() const;
 	unsigned GetBfOffBits() const;
 	unsigned GetBfSize() const;
 	void SetBiBitPerPxl(const size_t);

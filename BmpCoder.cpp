@@ -96,8 +96,8 @@ unsigned BmpCoder::Encode(std::ifstream &ifs, std::shared_ptr<char[]> &bmpFile)
 	bmpFactory.SetBfReserved1(0x4248);	// "HB"
 	bmpFactory.SetResolution(width, height);
 	bmpFactory.GetFile(bmpFile);
-	if (0 == GetCipher(ifs, fileSize, bmpFile.get() +
-				bmpFactory.GetBfOffBits(), width * height))
+	if (0 == GetCipher(ifs, fileSize, bmpFile.get() + bmpFactory.GetBfOffBits(),
+				bmpFactory.GetBiImageSize()))
 		result = bmpFactory.GetBfSize();
 	return result;
 }
