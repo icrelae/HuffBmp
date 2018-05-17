@@ -185,7 +185,8 @@ std::string HuffmanCoder::Decode(std::string &originStr) const
 		++itOriginStr;
 	}
 	// return the rest of originStr
-	originStr.erase(originStr.begin(), itLastCodeEnd + 1);
+	if (itLastCodeEnd < originStr.end())
+		originStr.erase(originStr.begin(), itLastCodeEnd + 1);
 	return result;
 }
 
