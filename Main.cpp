@@ -21,6 +21,7 @@ void TestXor()
 	DecodeStrategy decoderStg(&xorCoder);
 	encoderStg.Encode("/tmp/tmp", "/tmp/tmp.cipher");
 	decoderStg.Decode("/tmp/tmp.cipher", "/tmp/tmp.plain");
+	system("md5sum /tmp/tmp /tmp/tmp.plain");
 }
 
 void TestHuff()
@@ -30,6 +31,7 @@ void TestHuff()
 	DecodeStrategy decoderStg(&huffmanCoder);
 	encoderStg.Encode("/tmp/tmp", "/tmp/tmp.cipher");
 	decoderStg.Decode("/tmp/tmp.cipher", "/tmp/tmp.plain");
+	system("md5sum /tmp/tmp /tmp/tmp.plain");
 }
 
 void TestBmpFactory()
@@ -44,11 +46,16 @@ void TestBmpCoder()
 	BmpCoder bmpCoder;
 	std::string fileForEncode = "/tmp/tmp";
 	std::string fileForDecode = fileForEncode + ".plain";
+	std::string fileForBmp = fileForEncode + ".bmp";
 	std::shared_ptr<char[]> bmpSptr;
 	std::ifstream ifs(fileForEncode, std::ios::binary);
-	std::ofstream ofs(fileForDecode, std::ios::binary);
-	bmpCoder.Encode(ifs, bmpSptr);
-	bmpCoder.Decode(bmpSptr, ofs);
+	std::ofstream ofsPlain(fileForDecode, std::ios::binary);
+	std::ofstream ofsBmp(fileForBmp, std::ios::binary);
+	unsigned fileSize = bmpCoder.Encode(ifs, bmpSptr);
+	ofsBmp.write(bmpSptr.get(), fileSize);
+	bmpCoder.Decode(bmpSptr, ofsPlain);
+	ofsPlain.close();
+	system("md5sum /tmp/tmp /tmp/tmp.plain");
 }
 
 void ShowHelp(std::ostream &os)
