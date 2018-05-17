@@ -11,8 +11,8 @@ public:
 	int Decode(const std::string&, const std::string&);
 private:
 	CoderInfoIO *coderInfoPtr;
-	static const size_t readBlockSize = 64;
-	static const size_t writeBlockSize = readBlockSize * 5;
+	size_t readBlockSize;
+	size_t writeBlockSize;
 };
 
 #endif // _DECODESTRATEGY_H
